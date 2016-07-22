@@ -1,0 +1,10 @@
+*.pyc
+*.npy
+*.npz
+*.h5
+*.log
+*.gif
+*.jpg
+*.eps
+
+
