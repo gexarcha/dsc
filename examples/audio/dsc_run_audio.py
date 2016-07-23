@@ -66,18 +66,11 @@ D = 160
 # Approximation parameters for Expectation Truncation
 Hprime = 6
 gamma = 4
-# states=np.array([-1.,0.,1.])
-# states=np.array([0.,1.,2.,3.])
-# states=np.array([-2.,-1.,0.,1.,2.])
-# states=np.array([0.,1.,2.,3.,4.])#,5.])
 states=np.array([-2.,-1.,0.,1.,2.])
-# states=np.array([0.,1.,2.])
 
 # Import and instantiate a model
 from pulp.em.dmodels.dsc_et import DSC_ET
 model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','sigma','pi'])
-# model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','pi'])
-# model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['sigma','W'])
 
 
 
@@ -88,17 +81,11 @@ data=None
 channel = 1
 if MPI.COMM_WORLD.rank==0:
     data = read(N,D,overlap)
-    # data -= data.mean(1)[:,None]
-    # mN = 10000
-    # all_data = getpatches(data[channel],N,D,overlap)
-    # all_data = getspikes(data[channel],D,-50.)
-    # DC = getpatches(data[channel],mN,D,.0, start=200000).mean()
-    #DC = all_data.mean()
+
 
     N=data.shape[0]
     N = N- (N%nprocs)
     data=data[:N,:]
-    print N
     all_data = data.reshape((nprocs,N/nprocs,D)) 
 else:
     all_data = None
@@ -120,20 +107,15 @@ if __name__ == "__main__":
     all_data = comm.scatter(all_data,root=0)
 
     # Load data
-    # first_y, last_y = stride_data(N)
-    # my_y = read_chunks(N)[first_y:last_y]
     data_fname = "/users/ml/xoex6879/data/cat/h5" + "/tiger_p6_highpass_high.h5"
     my_y=all_data
     my_data = {
         'y': my_y,
-        # 's': my_s,
     }
 
     # Prepare model...
 
     # Configure DataLogger
-    # dlog.start_gui(GUI)
-    # print_list = ('T', 'Q', 'pi', 'sigma', 'N', 'MAE', 'L')
     print_list = ('T', 'Q', 'pi', 'sigma', 'N','N_use', 'L','W_noise','sigma_noise','pi_noise','prior_mass')
     h5_list = ('W', 'pi', 'sigma', 'y', 'N',  'N_use','prior_mass','states','Hprime','H','gamma','channel')
     h5_list += ('infered_posterior','infered_states','series','rseries','ry','rs','overlap','ty','ts','overlap')
@@ -145,27 +127,14 @@ if __name__ == "__main__":
     dlog.append('H',H)
     dlog.append('overlap',overlap)
     dlog.append('states',states)
-    #dlog.append('',Hprime)
-    #dlog.append('Hprime',Hprime)
-    #dlog.append('Hprime',Hprime)
-    #dlog.append('Hprime',Hprime)
-    # dlog.append('ry',ry)
-    # dlog.append('rs',rs)
-    # dlog.append('ty',ty)
-    # dlog.append('ts',ts)
 
     model_params ={}
 
     model_params = model.standard_init(my_data)
     #Initialize W with data points
     model_params['W'][:,:] = my_y[np.abs(my_y).sum(1)>0.5][:H,:].T 
-    # print my_y[np.abs(my_y).sum(1)>1.][:H,:].T.shape
     comm.Bcast([model_params['W'], MPI.DOUBLE])
-    # for param_name in model_params.keys():
-    #     if param_name not in model.to_learn:
-    #         model_params[param_name]=params_gt[param_name]
 
-    # model.s_gt = my_s
     # Choose annealing schedule
     anneal = LinearAnnealing(200)
     anneal['T'] = [(0., 10.), (.25, 1.)]
@@ -193,12 +162,7 @@ if __name__ == "__main__":
     dlog.append('infered_states',inf_states)
 
     if  comm.rank==0:
-        print inf_states.shape
-        print inf_states[0,:,:]
-        print inf_poster[0,:]
         recon = model.generate_data(em.lparams, my_y.shape[0]*comm.size, noise_on=False, gs=inf_states[:,0,:])
-        print recon['y'].shape
-        print recon['s'].shape
         dlog.append('ry',recon['y'])
         dlog.append('rs',recon['s'])
         s=0
