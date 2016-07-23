@@ -2,12 +2,7 @@
 == Introduction ==
 
 This package contains all the source code to reproduce the numerical
-experiments described in the paper. It contains a parallelized implementation
-of the Binary Sparse Coding (BSC) [1], Gaussian Sparse Coding (GSC) [2], 
-Maximum Causes Analysis (MCA) [3], Maximum Magnitude Causes Analysis (MMCA) [4] and 
-Ternary Sparse Coding (TSC) [5] models. All these probabilistic generative models 
-are trained using a truncated Expectation Maximization (EM) algorithm [6].
-
+experiments described in the paper Discrete Sparse Coding. 
 
 == Software dependencies ==
  
@@ -29,14 +24,28 @@ examples/   - Small examples for initializing and running the models
 
 == Running ==
 
-To run some toy examples:
+To run the barstest experiment:
 
   $ cd examples/barstest
-  $ python bars-run-all.py param-bars-<...>.py
+  $ python dsc_run.py
 
-where <...> should be appropriately replaced to correspond to one of the parameter 
-files available in the directory. The bars-run-all.py script should then initialize 
-and run the algorithm which corresponds to the chosen parameter file. 
+To run the natural images experiment:
+  $ cd ../natims
+  $ python dsc_run.py
+
+To run the spikes experiment:
+  $ cd ../spikes
+  $ python dsc_on_hc1_run.py
+
+To run the audio experiment:
+  $ cd ../audio
+  $ python dsc_run_audio.py
+
+Some of this experiments are too big to run in a single workstation
+and should be executed on a cluster. Running our experiments on the 
+cluster largely depends on the configuration. Example batch files 
+for our cluster (slurm based) configuration (GOLD cluster - Uni Oldenburg) are
+given in examples/<experiment name>/batchscript.sh
 
 == Results/Output ==
 
@@ -67,30 +76,3 @@ b) On a cluster:
 
 See your MPI documentation for the details on how to start MPI parallelized 
 programs.
-
-
-== References ==
-
-[1] M. Henniges, G. Puertas, J. Bornschein, J. Eggert, and J. Lücke (2010).
-Binary Sparse Coding.
-Proc. LVA/ICA 2010, LNCS 6365, 450-457. 
-
-[2] A.-S. Sheikh, J. A. Shelton, J. Lücke (2014).
-A Truncated EM Approach for Spike-and-Slab Sparse Coding.
-Journal of Machine Learning Research, 15:2653-2687. 
-
-[3] G. Puertas, J. Bornschein, and J. Lücke (2010). 
-The Maximal Causes of Natural Scenes are Edge Filters.
-Advances in Neural Information Processing Systems 23, 1939-1947. 
-
-[4] J. Bornschein, M. Henniges, J. Lücke (2013).
-Are V1 simple cells optimized for visual occlusions? A comparative study.
-PLOS Computational Biology 9(6): e1003062.
-
-[5] Exarchakis, M. Henniges, J. Eggert, and J. Lücke (2012).
-Ternary Sparse Coding .
-International Conference on Latent Variable Analysis and Signal Separation (LVA/ICA), 204-212. 
-
-[6] J. Lücke and J. Eggert (2010). 
-Expectation Truncation and the Benefits of Preselection in Training Generative Models.
-Journal of Machine Learning Research 11:2855-2900. 
