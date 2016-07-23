@@ -12,10 +12,9 @@ from dsc.utils.parallel import pprint
 from dsc.utils.barstest import generate_bars
 from dsc.utils.autotable import AutoTable
 import tables
-from dsc.utils.parallel import pprint, stride_data
+from dsc.utils.parallel import stride_data
 
 from dsc.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
-# from dsc.visualize.gui import GUI, RFViewer, YTPlotter
 
 from dsc.em import EM
 from dsc.em.annealing import LinearAnnealing
@@ -53,35 +52,20 @@ D = size ** 2    # dimensionality of observed data
 # Approximation parameters for Expectation Truncation
 Hprime = 7
 gamma = 5
-# states=np.array([-1.,0.,1.])
-# states=np.array([0.,1.,2.,3.])
 states=np.array([-2.,-1.,0.,1.,2.])
-# states=np.array([0.,1.,2.,3.,4.,5.])
-# states=np.array([-2.,0.,1.,5.])
-# states=np.array([-2.,0.,1.])
-# states=np.array([0.,1.,2.,3.,4.])
-# states=np.array([0.,1.])
-# states=np.array([0.,1.,2.])
+
 
 # Import and instantiate a model
 from dsc.models.dsc_et import DSC_ET
-# model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','pi','sigma'])
 model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['sigma','W','pi'])
 
 # Model parameters used when artificially generating
 # ground-truth data. This will NOT be used for the learning
 # process.
-# pi_gt = np.array([ 0.8, 0.2])
-# pi_gt = np.array([ 0.15,0.8, 0.05])
-# pi_gt = np.array([ 0.7, 0.2, 0.1])
-# pi_gt = np.array([ 0.7, 0.2, 0.1])
-pi_gt = np.array([ 0.1, 0.8, 0.1])
 pi_gt = np.array([0.025, 0.075, 0.8, 0.075, 0.025])
-# pi_gt = np.array([0.8,  0.05, 0.025, 0.1, 0.025])
-# pi_gt = np.array([0.1, 0.7, 0.15, 0.05])
 
 pi_gt = pi_gt/pi_gt.sum()
-print (pi_gt)
+
 params_gt = {
     'W':  10 * generate_bars(H),   # this function is in bars-create-data
     'pi':  pi_gt,
@@ -106,9 +90,7 @@ if MPI.COMM_WORLD.rank == 0:
             tbl.append(key, data[key])
         tbl.close()
 MPI.COMM_WORLD.barrier()
-# print(dir(MPI.COMM_WORLD))
-# output_path=MPI.COMM_WORLD.bcast(output_path)
-# print output_path
+
 # Main
 if __name__ == "__main__":
     comm = MPI.COMM_WORLD
@@ -129,7 +111,6 @@ if __name__ == "__main__":
 
     # Load data
     data_fname = output_path + "/data.h5"
-    # data_fname = "output/dsc_run.py.2015-12-04+17:42/data.h5"
     with tables.open_file(data_fname, 'r') as data_h5:
         N_file = data_h5.root.y.shape[1]
         if N_file < N:
@@ -151,40 +132,22 @@ if __name__ == "__main__":
     # Prepare model...
 
     # Configure DataLogger
-    # dlog.start_gui(GUI)
     print_list = ('T', 'Q', 'pi', 'sigma', 'N', 'N_use', 'MAE', 'L')
     h5_list = ('W', 'pi', 'sigma', 'y', 'N', 'N_use', 'prior_mass', 'states', 'Hprime', 'H', 'gamma', 'mu', 'MAE','W_gt','pi_gt','sigma_gt')
-    # dlog.set_handler(['L'], YTPlotter)
     dlog.set_handler(print_list, TextPrinter)
+    dlog.set_handler(print_list, StoreToTxt)
     dlog.set_handler(h5_list, StoreToH5, output_path +'/result.h5')
-    #dlog.set_handler(print_list, StoreToTxt, output_path + '/terminal.txt')
-    #dlog.set_handler('Q', YTPlotter)
-    # dlog.set_handler('W', RFViewer, rf_shape=(D2, D2))
-    # dlog.set_handler('W_gt', RFViewer, rf_shape=(D2, D2))
     dlog.append('W_gt',params_gt['W'])
     dlog.append('sigma_gt',params_gt['sigma'])
     dlog.append('pi_gt',params_gt['pi'])
-    # if 'pi' in model.to_learn:
-        # dlog.set_handler(['pi'], YTPlotter)
-    # if 'pies' in model.to_learn:
-    #     dlog.set_handler(['pies'], YTPlotter)
     dlog.append('N',N)
     dlog.append('Hprime',Hprime)
     dlog.append('H',H)
     dlog.append('gamma',gamma)
     dlog.append('states',states)
-    # if 'sigma' in model.to_learn:
-        # dlog.set_handler(['sigma'], YTPlotter)
-    # if 'mu' in model.to_learn:
-    #     dlog.set_handler(['mu'], YTPlotter)
-    # dlog.set_handler('y', RFViewer, rf_shape=(D2, D2))
-    # dlog.append('y',my_y[:10].T)
 
     model_params = model.standard_init(my_data)
-    # model_params = params_gt
-    # model_params['W'] = np.random.normal(size=model_params['W'].shape)+20
-    # model_params['pi'] = np.array([0.1,0.6,0.1,0.2])
-    # model_params = params_gt
+
     dlog.append_all(model_params)
     for param_name in model_params.keys():
         if param_name not in model.to_learn:
@@ -195,7 +158,6 @@ if __name__ == "__main__":
     anneal = LinearAnnealing(100)
     anneal['T'] = [(0.0, 2.), (0.1, 2.), (0.4, 1.)]
     anneal['Ncut_factor'] = [(0, 0.0),(0.6,0.0),  (0.9, 1.)]
-    # anneal['Ncut_factor'] = [(0, 0.0),(0.1,0.0), (0.4, 1.)]
     # anneal['W_noise'] = [(0, 5.0), (.6, 0.0)]
     # anneal['pi_noise'] = [(0, 0.1), (.6, 0.0)]
     anneal['anneal_prior'] = False
