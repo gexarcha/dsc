@@ -9,26 +9,14 @@ np.random.RandomState(1023)
 
 from pulp.utils import create_output_path
 from pulp.utils.parallel import pprint
-from pulp.utils.autotable import AutoTable
-import tables
-from pulp.utils.parallel import pprint, stride_data
-from read_hc1 import readdat, readxml, getpatches, readfil,getspikes
+from read_hc1 import  readxml, getpatches, readfil
 from pulp.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
-# from pulp.visualize.gui import GUI, RFViewer, YTPlotter
 
 from pulp.em import EM
 from pulp.em.annealing import LinearAnnealing
-# from pulp.utils.vc import VClog
 import os
 
 output_path = create_output_path()
-# run_tag = "run_"+output_path[output_path.find('.py.')+4:-1].replace(":","_")
-# gitlog=VClog()
-# if gitlog.repo.is_dirty():
-#     gitlog.autocommit(MPI.COMM_WORLD,run_tag=run_tag)
-# else:
-#     if MPI.COMM_WORLD==0:
-#         gitlog.tag(run_tag)
 
 def rank0only(func, *args, **kargs):
     if MPI.COMM_WORLD.rank == 0:
@@ -40,16 +28,12 @@ if MPI.COMM_WORLD.rank==0:
     cmd = "rsync -avz "
     for pattern in exclude_from_sync:
         cmd = cmd + "--exclude '{}' ".format(pattern)
-    # cmd = cmd + " {} {}".format('/'+''.join(output_path.split('/')[:-1]),os.path.abspath('../..'), output_path)
     cmd = cmd + " {} {}".format(os.path.abspath('../..'), output_path+'src')
     print "Executing :{}".format(cmd)
     os.system(cmd)
-# np.__config__.show()
 # Number of datapoints to generate
 N = 100000
 
-# Each datapoint is of D = size*size
-# size = 16
 
 # Diemnsionality of the model
 D = 20    # dimensionality of observed data
@@ -60,9 +44,6 @@ Hprime = 5
 gamma = 3
 
 # Define Desired States
-# states=np.array([-1.,0.,1.])
-# states=np.array([0.,1.])
-
 # states=np.array([0.,1.,2.,3.,4.])
 # states=np.array([0.,1.,2.,3.,4.,5.,6.,7.,8.])
 states=np.array([0.,1.,15,20])
@@ -71,10 +52,6 @@ states=np.array([0.,1.,15,20])
 # Import and instantiate a model
 from pulp.em.dmodels.dsc_et import DSC_ET
 model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','pi','sigma'])
-# model.penalty=0.995
-# model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['sigma','W'])
-
-# all_data = np.zeros(N,D)
 nprocs  = MPI.COMM_WORLD.size
 data=None
 channel = 1
@@ -86,14 +63,9 @@ if MPI.COMM_WORLD.rank==0:
     data -= data.mean(1)[:,None]
     mN = 10000
     all_data = getpatches(data[channel],N,D,overlap)
-    # all_data = getspikes(data[channel],D,-50.)
-    # DC = getpatches(data[channel],mN,D,.0, start=200000).mean()
-    #DC = all_data.mean()
-
     N=all_data.shape[0]
     N = N- (N%nprocs)
     all_data=all_data[:N,:]
-    print N
     all_data = all_data.reshape((nprocs,N/nprocs,D)) 
 else:
     all_data = None
@@ -115,35 +87,17 @@ if __name__ == "__main__":
 
     # Extract some parameters
 
-    # Load data
-    # data_fname = "/users/ml/xoex6879/data/VanHaterenImages/natims_conv_1700_p26.h5"
-    # data_fname = "/users/ml/xoex6879/data/VanHaterenImages/natims_conv_1700_p16_95var.h5"
-    # with tables.open_file(data_fname, 'r') as data_h5:
-        # N_file = data_h5.root.wdata.shape[0]
-        # if N_file < N:
-        #     dlog.progress(
-        #         "WARNING: N={} chosen but only {} data points available. ".format(N, N_file))
-        #     N = N_file
-
-        # first_y, last_y = stride_data(N)
-        # my_y = data_h5.root.wdata[first_y:last_y]
-        # data_h5.close()
 
     my_data = {
         'y': all_data,
     }
-    print MPI.COMM_WORLD.rank, all_data.shape
-    # pprint("{}".format(my_y[8,:10]))
     # Configure DataLogger
     print_list = ('T', 'Q', 'pi', 'sigma', 'N','N_use', 'L','W_noise','sigma_noise','pi_noise','prior_mass')
     h5_list = ('W', 'pi', 'sigma', 'y', 'N',  'N_use','prior_mass','states','Hprime','H','gamma','channel')
     h5_list += ('infered_posterior','infered_states','series','rseries','ry','rs')
-    # dlog.set_handler(['L'], YTPlotter)
     dlog.set_handler(print_list, TextPrinter)
     dlog.set_handler(print_list, StoreToTxt, output_path + '/terminal.txt')
     dlog.set_handler(h5_list, StoreToH5, output_path +'/result.h5')
-
-    # dlog.append('y',my_data['y'])
     dlog.append('N',N)
     dlog.append('Hprime',Hprime)
     dlog.append('H',H)
@@ -153,20 +107,11 @@ if __name__ == "__main__":
     dlog.append('overlap',overlap)
     # Prepare model...
     model_params = model.standard_init(my_data)
-#    init_sparseness = 1/float(H)
- #   model_params['pi'] = np.array([1- init_sparseness ,init_sparseness])
     dlog.append_all(model_params)
 
     # Choose annealing schedule
     anneal = LinearAnnealing(200)
-    # anneal['T'] = [(0.0, 1.1),(0.1,1.1), (0.5, 1.)]
     anneal['T'] = [(0.0, 2.), (0.05,2.), (0.4, 1.)]
-    # anneal['W_noise'] = [(0.0, 0.), (0.05,0.), (0.15,1.), (0.3,3.), (0.5, 0.)]
-    # anneal['W_noise'] = [(0.0, 0.2), (0.05,0.2), (0.5, 0.)]
-    # anneal['W_noise'] = [(0.0, 1.),(0.1, 1./10.0), (0.5, 0.0)]
-    # anneal['T'] = [(0.0, 1.),(0.1,1.), (0.5, 1.)]
-    # anneal['Ncut_factor'] = [(0.0, 0.),(0.1, 0.0),(0.3, 0.0),(1.,0.)]
-    # anneal['Ncut_factor'] = [(0.0, 0.1),(0.5, 1.0)]
     # anneal['W_noise'] = [(0.0, 1./10),(0.1, 1./10.0), (0.5, 0.0)]
     anneal['anneal_prior'] = False
 
@@ -185,12 +130,7 @@ if __name__ == "__main__":
     dlog.append('infered_posterior',inf_poster)
     dlog.append('infered_states',inf_states)
     if  comm.rank==0:
-        print inf_states.shape
-        print inf_states[0,:,:]
-        print inf_poster[0,:]
         recon = model.generate_data(em.lparams, all_data.shape[0]*comm.size, noise_on=False, gs=inf_states[:,0,:])
-        print recon['y'].shape
-        print recon['s'].shape
         dlog.append('ry',recon['y'])
         dlog.append('rs',recon['s'])
         s=0
