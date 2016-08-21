@@ -1,3 +1,6 @@
+#
+#  Lincense: Academic Free License (AFL) v3.0
+#
 import numpy as np
 
 fname = '../../Data/d5611/d561102'

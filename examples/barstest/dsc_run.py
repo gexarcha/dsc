@@ -1,3 +1,6 @@
+#
+#  Lincense: Academic Free License (AFL) v3.0
+#
 #!/usr/bin/env python
 
 import sys
