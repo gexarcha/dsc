@@ -15,8 +15,8 @@ outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-23+01:56/'
 outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-23+13:05/'
 outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-29+12:46/'
 ofile = outputdir+'result.h5'
-
 fh =tb.open_file(ofile,'r')
+sampling_rate=10000.
 
 sigma_all = fh.root.sigma.read().squeeze()
 pi_all = fh.root.pi.read().squeeze()
@@ -114,7 +114,7 @@ for e in range(0,epochs,10)[::-1]:
 			ax.plot(np.linspace(0,D/10,num=D) ,this_W)#scale in kHz
 			ax.axis([0,D/10,minwg,maxwg],fontsize=16)
 			# ax.savefig(outputdir+'_images/'+'W_e_{:03}_h_{:03}.jpg'.format(e,h))
-			ax.set_title("$W_{"+str(h)+"}$",fontsize=16)
+			ax.set_title("$W_{"+str(h+1)+"}$",fontsize=16)
 			ax.tick_params(axis='both',labelsize=12)
 			ax.axis('off')
 			# ax.clf()
@@ -209,6 +209,8 @@ for e in range(epochs)[::-1]:
 
 state_list = []
 std_series=None
+print series
+print rseries
 if series is not None and rseries is not None:
 	IC = series.squeeze()[5,:].squeeze()
 	series = series.squeeze()[channel,:].squeeze()
@@ -299,11 +301,12 @@ if series is not None and rseries is not None:
 	# import ipdb; ipdb.set_trace()  # breakpoint 3ef80612 //
 	# for s in range(0,T-l,l):
 	for s in range(0,T-l,l):
-		if os.path.exists(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l)):
-			continue
-		if os.path.exists(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l)):
+		if os.path.exists(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l)) and os.path.exists(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l)):
 			continue
 	# for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
+		time_scale = 1000/sampling_rate
+		lim_x1=s*time_scale
+		lim_x2=(s+l)*time_scale
 		fig_decomp = plt.figure(1,(12,20))
 		ax_orig_recon_1 = plt.subplot2grid((4,1),(0,0))
 		orig = series[s:s+l]
@@ -311,7 +314,7 @@ if series is not None and rseries is not None:
 		# trsts = reconstates[s/step:s/step+l/step]
 		diff_std = np.std( reconseries2 - series[:reconseries2.shape[0]] )
 		thisIC = IC[s:s+l]
-		xdata = np.linspace(s,s+l, l)
+		xdata = np.linspace(s,s+l, l)*time_scale #convert to ms
 		these_lims = lims2[lims2>=s]
 		these_lims = these_lims[these_lims<s+l]
 		trsts = rsts[lims2>=s]
@@ -326,7 +329,7 @@ if series is not None and rseries is not None:
 		# print xdata.shape,orig.shape,recon.shape
 		ax_orig_recon_1.plot(xdata,orig,label='Original EC',color='blue')
 		ax_orig_recon_1.plot(xdata,recon,label='Reconstruction EC',color='red')
-		ax_orig_recon_1.axis([s,s+l,minb,maxb],fontsize=12)
+		ax_orig_recon_1.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_orig_recon_1.tick_params(axis='both',labelsize=12)
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_orig_recon_1.get_legend_handles_labels()
@@ -361,47 +364,49 @@ if series is not None and rseries is not None:
 				width = lims[ind,0]+2
 				height = None
 
-
+				full_xdata = np.linspace(lims[ind,0],lims[ind,1],D)*time_scale
+				half_xdata1 = np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2)*time_scale
+				half_xdata2 = np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2)*time_scale
 				if ind%3==2:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_1.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					elif rstssize[ind]==1:
-						ax_decomp_1.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_1.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'b')
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
 					elif rstssize[ind]==2:
-						ax_decomp_1.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'b')
-						ax_decomp_1.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
-						ax_decomp_1.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
 					ax_decomp_1.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
 				elif ind%3==1:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + O1 + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_2.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					elif rstssize[ind]==1:
-						ax_decomp_2.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_2.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'b')
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
 					elif rstssize[ind]==2:
-						ax_decomp_2.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'b')
-						ax_decomp_2.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
-						ax_decomp_2.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
 					ax_decomp_2.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
 				else:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + 2*O1 + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_3.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					elif rstssize[ind]==1:
-						ax_decomp_3.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_3.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'b')
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
 					elif rstssize[ind]==2:
-						ax_decomp_3.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,hp] + O2*h,'b')
-						ax_decomp_3.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
-						ax_decomp_3.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
 					ax_decomp_3.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
 				
 				h+=1
@@ -420,15 +425,15 @@ if series is not None and rseries is not None:
 			tlab.append('${}$'.format(ticmax))
 
 		# ax_decomp_1.bar(these_lims,tnzero,trssize)
-		ax_decomp_1.axis([s,s+l,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
+		ax_decomp_1.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_1.set_yticks(tloc)
 		ax_decomp_1.set_yticklabels(tlab)
 		ax_decomp_1.tick_params(axis='both',labelsize=12)
-		ax_decomp_2.axis([s,s+l,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
+		ax_decomp_2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_2.set_yticks(tloc)
 		ax_decomp_2.set_yticklabels(tlab)
 		ax_decomp_2.tick_params(axis='both',labelsize=12)
-		ax_decomp_3.axis([s,s+l,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
+		ax_decomp_3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_3.set_yticks(tloc)
 		ax_decomp_3.set_yticklabels(tlab)
 		ax_decomp_3.tick_params(axis='both',labelsize=12)
@@ -436,10 +441,10 @@ if series is not None and rseries is not None:
 
 		# ax_IC = fig_decomp.add_subplot(4,1,3)
 		for i in range(these_lims.shape[0]):
-			ax_orig_recon_1.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-			ax_decomp_1.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-			ax_decomp_2.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-			ax_decomp_3.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+			ax_orig_recon_1.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+			ax_decomp_1.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+			ax_decomp_2.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+			ax_decomp_3.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 		
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
 		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
@@ -452,7 +457,7 @@ if series is not None and rseries is not None:
 		ax_orig_recon_2 = plt.subplot2grid((4,1),(0,0))
 		ax_orig_recon_2.plot(xdata,orig,label='Original EC',color='blue')
 		ax_orig_recon_2.plot(xdata,recon,label='Reconstruction EC',linestyle='dashed',color='red')
-		ax_orig_recon_2.axis([s,s+l,minb,maxb],fontsize=12)
+		ax_orig_recon_2.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_orig_recon_2.tick_params(axis='both',labelsize=12)
 		ax_orig_recon_2.plot(xdata,5*std_series*np.ones_like(xdata),linestyle='dashed',label='$5 \\times \sigma_{orig}$',color='black')
 		ax_orig_recon_2.plot(xdata,-5*std_series*np.ones_like(xdata),linestyle='dashed',color='black')
@@ -483,7 +488,7 @@ if series is not None and rseries is not None:
 		ax_diff.plot(xdata,-5*std_series*np.ones_like(xdata),linestyle='dashed',color='black')
 		ax_diff.plot(xdata,sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',label='$\sigma_{model}$',color='blue')
 		ax_diff.plot(xdata,-sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',color='blue')
-		ax_diff.axis([s,s+l,minb,maxb],fontsize=12)
+		ax_diff.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_diff.tick_params(axis='both',labelsize=12)
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_diff.get_legend_handles_labels()
@@ -519,18 +524,20 @@ if series is not None and rseries is not None:
 					left = left[-2]
 				else:
 					left = s
+				left*=time_scale
+				right*=time_scale
 				pat = patches.Rectangle((left,minic),right-left,4*(maxic-minic),fill=True,alpha=0.3,color='red')
 				ax_IC.add_patch(pat)
 				# ax.axvspan(p[0]-25,p[0]+25,color='red',alpha=0.5)
 
-		ax_IC.axis([s,s+l,minic,maxic],fontsize=12)
+		ax_IC.axis([lim_x1,lim_x2,minic,maxic],fontsize=12)
 		handles, labels = ax_IC.get_legend_handles_labels()
 		lgd2 = ax_IC.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		ax_IC.tick_params(axis='both',labelsize=12)
 		# ax_IC.grid('on')
 		ax_mass=plt.subplot2grid((4,1),(3,0))
-		ax_mass.bar(these_lims,tmass,trssize)
-		ax_mass.axis([s,s+l,0,gamma*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
+		ax_mass.bar(these_lims*time_scale,tmass,trssize*time_scale)
+		ax_mass.axis([lim_x1,lim_x2,0,gamma*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
 		ax_mass.tick_params(axis='both',labelsize=12)
 
 
