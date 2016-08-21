@@ -11,18 +11,18 @@ from mpi4py import MPI
 import numpy as np
 np.random.RandomState(1023)
 
-from pulp.utils import create_output_path
-from pulp.utils.parallel import pprint
-# from pulp.utils.barstest import generate_bars
-# from pulp.utils.autotable import AutoTable
+from dsc.utils import create_output_path
+from dsc.utils.parallel import pprint
+# from dsc.utils.barstest import generate_bars
+# from dsc.utils.autotable import AutoTable
 import tables
-from pulp.utils.parallel import pprint, stride_data
+from dsc.utils.parallel import pprint, stride_data
 
-from pulp.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
-# from pulp.visualize.gui import GUI, RFViewer, YTPlotter
+from dsc.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
+# from dsc.visualize.gui import GUI, RFViewer, YTPlotter
 
-from pulp.em import EM
-from pulp.em.annealing import LinearAnnealing
+from dsc.em import EM
+from dsc.em.annealing import LinearAnnealing
 
 from data import read
 import os
@@ -73,7 +73,7 @@ gamma = 4
 states=np.array([-2.,-1.,0.,1.,2.])
 
 # Import and instantiate a model
-from pulp.em.dmodels.dsc_et import DSC_ET
+from dsc.models.dsc_et import DSC_ET
 model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','sigma','pi'])
 
 

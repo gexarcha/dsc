@@ -10,13 +10,13 @@ from mpi4py import MPI
 import numpy as np
 np.random.RandomState(1023)
 
-from pulp.utils import create_output_path
-from pulp.utils.parallel import pprint
+from dsc.utils import create_output_path
+from dsc.utils.parallel import pprint
 from read_hc1 import  readxml, getpatches, readfil
-from pulp.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
+from dsc.utils.datalog import dlog, StoreToH5, TextPrinter, StoreToTxt
 
-from pulp.em import EM
-from pulp.em.annealing import LinearAnnealing
+from dsc.em import EM
+from dsc.em.annealing import LinearAnnealing
 import os
 
 output_path = create_output_path()
@@ -53,7 +53,7 @@ states=np.array([0.,1.,15,20])
 # states=np.array([0.,1.,5.])
 
 # Import and instantiate a model
-from pulp.em.dmodels.dsc_et import DSC_ET
+from dsc.models.dsc_et import DSC_ET
 model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['W','pi','sigma'])
 nprocs  = MPI.COMM_WORLD.size
 data=None
