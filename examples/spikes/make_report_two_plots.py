@@ -4,6 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 plt.rc('text', usetex=True)
 import tables as tb
 import os
@@ -135,7 +136,7 @@ meanw = np.mean(W_all)
 e=-1 
 for h in range(H):
 	fig=plt.figure(2)
-	if os.path.exists(outputdir+'_images/'+'W_e_{:03}_h_{:03}.eps'.format(-1,h)):
+	if os.path.exists(outputdir+'_images/'+'W_e_{:03}_h_{:03}.eps'.format(-1,h+1)):
 		continue
 	this_W = W_all[-1,:,h]
 	# this_W=this_W.reshape((psz,psz))
@@ -152,16 +153,16 @@ for h in range(H):
 	ax.plot(np.linspace(0,D/10,num=D) ,this_W)#scale in kHz
 	ax.axis([0,D/10,minwg,maxwg])
 	# ax.savefig(outputdir+'_images/'+'W_e_{:03}_h_{:03}.jpg'.format(e,h))
-	ax.set_title("$W_{"+str(h)+"}$")
+	ax.set_title("$W_{"+str(h+1)+"}$")
 	ax.tick_params(axis='both')
 
 	# ax.clf()
 	if h%30 == 0 :
-		print ("Finished epoch {:03} basis {:03}".format(e,h))
+		print ("Finished epoch {:03} basis {:03}".format(e,h+1))
 		print ("\tPlot settings scale: '{}', min: {}, max: {}, mean:{}".format(cscale,minwg,maxwg,meanw))
 		# ax.clf()
 	plt.tight_layout()
-	fig.savefig(outputdir+'_images/W_e_{:03}_h_{:03}.eps'.format(200,h), bbox_inches = 'tight',dpi=600)
+	fig.savefig(outputdir+'_images/W_e_{:03}_h_{:03}.eps'.format(200,h+1), bbox_inches = 'tight',dpi=600)
 	plt.close(fig)
 
 
@@ -211,6 +212,10 @@ state_list = []
 std_series=None
 print series
 print rseries
+title_font_dict = {"fontsize":"12"}
+marker_font_dict = {"fontsize":"16"}
+title_font_dict = None # {"fontsize":"12"}
+marker_font_dict = None #{"fontsize":"16"}
 if series is not None and rseries is not None:
 	IC = series.squeeze()[5,:].squeeze()
 	series = series.squeeze()[channel,:].squeeze()
@@ -334,6 +339,10 @@ if series is not None and rseries is not None:
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_orig_recon_1.get_legend_handles_labels()
 		lgd1 = ax_orig_recon_1.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
+		# ax_orig_recon_1.set_xlabel("ms")
+		ax_orig_recon_1.set_ylabel("mV [400-4000]Hz")
+		ax_orig_recon_1.set_title("A.", marker_font_dict,loc='left')
+		ax_orig_recon_1.set_title(r"Original and Reconstructed Signal", fontdict=title_font_dict,loc='center')
 		# ax_orig_recon_1.grid('on')
 
 		# plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(s,s+l))
@@ -352,16 +361,13 @@ if series is not None and rseries is not None:
 		# O1=300
 		O2=np.max(np.abs(W_all[-1,:,:]))*3
 		for ind in inds:
-			hs=-1
 			h=0
 			for hp,b in enumerate(rs[ind]):
-				hs+=1
-				assert hp==hs
 				if b==0:
 					continue
 
 
-				width = lims[ind,0]+2
+				width = lims[ind,0]*time_scale
 				height = None
 
 				full_xdata = np.linspace(lims[ind,0],lims[ind,1],D)*time_scale
@@ -379,7 +385,7 @@ if series is not None and rseries is not None:
 						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
 						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
-					ax_decomp_1.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
+					ax_decomp_1.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				elif ind%3==1:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + O1 + O2*h)+2
@@ -393,7 +399,7 @@ if series is not None and rseries is not None:
 						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
 						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
-					ax_decomp_2.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
+					ax_decomp_2.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				else:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + 2*O1 + O2*h)+2
@@ -407,7 +413,7 @@ if series is not None and rseries is not None:
 						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
 					elif rstssize[ind]==3:
 						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
-					ax_decomp_3.text(width,height,'{}x{}'.format(hs,b),fontsize=6)
+					ax_decomp_3.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				
 				h+=1
 		
@@ -429,14 +435,28 @@ if series is not None and rseries is not None:
 		ax_decomp_1.set_yticks(tloc)
 		ax_decomp_1.set_yticklabels(tlab)
 		ax_decomp_1.tick_params(axis='both',labelsize=12)
+		# ax_decomp_1.set_xlabel("ms")
+		ax_decomp_1.set_title("B.", marker_font_dict,loc='left')
+		ax_decomp_1.set_title("$t-1$", fontdict=title_font_dict,loc='center')
+		# ax_decomp_1.set_ylabel("mV [400-4000]Hz")
+		
 		ax_decomp_2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_2.set_yticks(tloc)
 		ax_decomp_2.set_yticklabels(tlab)
 		ax_decomp_2.tick_params(axis='both',labelsize=12)
+		# ax_decomp_2.set_xlabel("ms")
+		ax_decomp_2.set_title("C.", marker_font_dict,loc='left')
+		ax_decomp_2.set_title("$t$", fontdict=title_font_dict,loc='center')
+		# ax_decomp_2.set_ylabel("mV [400-4000]Hz")
+		
 		ax_decomp_3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_3.set_yticks(tloc)
 		ax_decomp_3.set_yticklabels(tlab)
 		ax_decomp_3.tick_params(axis='both',labelsize=12)
+		ax_decomp_3.set_xlabel("ms")
+		ax_decomp_3.set_title("D.", marker_font_dict,loc='left')
+		ax_decomp_3.set_title("$t+1$", fontdict=title_font_dict,loc='center')
+		# ax_decomp_3.set_ylabel("mV [400-4000]Hz")
 
 
 		# ax_IC = fig_decomp.add_subplot(4,1,3)
@@ -445,9 +465,10 @@ if series is not None and rseries is not None:
 			ax_decomp_1.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			ax_decomp_2.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			ax_decomp_3.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-		
+		# fig_decomp.tight_layout(rect=[0,0,1,0.9])
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
-		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
+		sup1=fig_decomp.suptitle(r"\textbf{EC signal discretization}")
+		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,sup1), bbox_inches = 'tight',dpi=600)
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,lgd2), bbox_inches = 'tight')
 		plt.close(fig_decomp)
@@ -467,6 +488,10 @@ if series is not None and rseries is not None:
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_orig_recon_2.get_legend_handles_labels()
 		lgd1 = ax_orig_recon_2.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
+		# ax_orig_recon_2.set_xlabel("ms")
+		ax_orig_recon_2.set_ylabel(r"mV [400-4000]Hz")
+		ax_orig_recon_2.set_title(r"A.", marker_font_dict,loc='left')
+		ax_orig_recon_2.set_title(r"Original and Reconstructed signal", fontdict=title_font_dict,loc='center')
 		# ax_orig_recon_1.grid('on')
 
 		ax_diff = plt.subplot2grid((4,1),(1,0))
@@ -490,9 +515,13 @@ if series is not None and rseries is not None:
 		ax_diff.plot(xdata,-sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',color='blue')
 		ax_diff.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_diff.tick_params(axis='both',labelsize=12)
+		ax_diff.set_title("B.", marker_font_dict,loc='left')
+		ax_diff.set_title("Difference EC-REC", fontdict=title_font_dict,loc='center')
+		# ax_diff.set_xlabel("ms")
+		# ax_diff.set_ylabel("mV [400-4000]Hz")
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_diff.get_legend_handles_labels()
-		lgd1 = ax_diff.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
+		lgd2 = ax_diff.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		# ax_orig_recon_1.grid('on')
 
 		
@@ -534,11 +563,18 @@ if series is not None and rseries is not None:
 		handles, labels = ax_IC.get_legend_handles_labels()
 		lgd2 = ax_IC.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		ax_IC.tick_params(axis='both',labelsize=12)
+		# ax_IC.set_xlabel("ms")
+		ax_IC.set_ylabel("mV")
+		ax_IC.set_title("C.", marker_font_dict,loc='left')
+		ax_IC.set_title("Time-aligned intra-cellular recording (IC)", fontdict=title_font_dict,loc='center')
 		# ax_IC.grid('on')
 		ax_mass=plt.subplot2grid((4,1),(3,0))
 		ax_mass.bar(these_lims*time_scale,tmass,trssize*time_scale)
 		ax_mass.axis([lim_x1,lim_x2,0,gamma*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
 		ax_mass.tick_params(axis='both',labelsize=12)
+		ax_mass.set_xlabel("ms")
+		ax_mass.set_title("D.", marker_font_dict,loc='left')
+		ax_mass.set_title("Model Spike Mass", fontdict=title_font_dict,loc='center')
 
 
 
@@ -548,7 +584,8 @@ if series is not None and rseries is not None:
 			# ax_IC.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			# ax_diff.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 		
-		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
+		sup1=fig_rec.suptitle(r"\textbf{Accuracy of the reconstruction}")
+		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,sup1), bbox_inches = 'tight',dpi=600)
 		plt.close(fig_decomp)
 		plt.close(fig_rec)
 
