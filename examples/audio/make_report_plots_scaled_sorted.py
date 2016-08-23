@@ -20,6 +20,7 @@ outputdir = 'output/'+'dsc_run_audio.py.d570370/'
 ofile = outputdir+'result.h5'
 print outputdir
 fh =tb.open_file(ofile,'r')
+sampling_rate=16000.
 
 sigma_all = fh.root.sigma.read().squeeze()
 pi_all = fh.root.pi.read().squeeze()
@@ -186,6 +187,12 @@ for e in range(0,epochs)[::-1]:
         # os.system("rm {}_images/W_e_{:03}_h*.jpg ".format(outputdir, e))
 # os.system("convert -delay 10 {}montage_images/* {}W_training.gif".format(outputdir,outputdir))
 state_list = []
+
+title_font_dict = {"fontsize":"12"}
+marker_font_dict = {"fontsize":"16"}
+title_font_dict = None # {"fontsize":"12"}
+marker_font_dict = None #{"fontsize":"16"}
+time_scale = 1000/sampling_rate
 if series is not None and rseries is not None:
     #IC = series.squeeze()[5,:].squeeze()
     series = series.squeeze()#[channel,:].squeeze()
@@ -290,6 +297,8 @@ if series is not None and rseries is not None:
     for s in range(0,T-l,l):
         print(c)
     # for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
+        lim_x1=s*time_scale
+        lim_x2=(s+l)*time_scale
         fig = plt.figure(1,(12,20))
         ax1 = plt.subplot2grid((4,1),(0,0),rowspan=1)
         # ax1 = fig.add_subplot(4,1,1)
@@ -298,7 +307,7 @@ if series is not None and rseries is not None:
         recon = reconseries2[s:s+l]
         # trsts = reconstates[s/step:s/step+l/step]
         #thisIC = IC[s:s+l]
-        xdata = np.linspace(s,s+l, l)
+        xdata = np.linspace(s,s+l, l)*time_scale
         these_lims = lims2[lims2>=s]
         these_lims = these_lims[these_lims<s+l]
         trsts = rsts[lims2>=s]
@@ -309,7 +318,6 @@ if series is not None and rseries is not None:
         tmass = tmass[:these_lims.shape[0]]
         tnzero = nzero[lims2>=s]
         tnzero = tnzero[:these_lims.shape[0]]
-        # xdata = np.linspace(s,s+l, l)
         # print xdata.shape,orig.shape,recon.shape
 
         minsl = np.min(series)
@@ -326,14 +334,16 @@ if series is not None and rseries is not None:
         ylimu = np.maximum(ylimu,stdrs)
         ax1.plot(xdata,orig,label='Original',color='blue')
         ax1.plot(xdata,recon,label='Reconstruction',color='red')
-        ax1.axis([s,s+l,yliml,ylimu],fontsize=18)
+        ax1.axis([lim_x1,lim_x2,yliml,ylimu],fontsize=18)
         ax1.tick_params(axis='both',labelsize=18)
         # ax.yticks(fontsize=16)
         handles, labels = ax1.get_legend_handles_labels()
         lgd1 = ax1.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=16)
+        ax1.set_title("A.", marker_font_dict,loc='left')
+        ax1.set_title(r"Original and Reconstructed Signal", fontdict=title_font_dict,loc='center')
         # ax1.grid('on')
 
-        # plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(s,s+l))
+        # plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(lim_x1,lim_x2))
         # if not os.path.exists('{}montage_images/orig_{:03}.jpg'.format(outputdir, e)):
 
         inds = np.arange(N)
@@ -370,51 +380,58 @@ if series is not None and rseries is not None:
                     continue
 
 
-                width = lims[ind,0]+2
+                width = lims[ind,0]*time_scale
                 height = None
 
+                full_xdata = np.linspace(lims[ind,0],lims[ind,1],D)*time_scale
+                half_xdata1 = np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2)*time_scale
+                half_xdata2 = np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2)*time_scale
 
                 if ind%3==2:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     if rstssize[ind]==0:
-                        ax2.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'r')
+                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
                     elif rstssize[ind]==1:
-                        ax2.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax2.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
+                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
                     elif rstssize[ind]==2:
-                        ax2.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax2.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
+                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
                     elif rstssize[ind]==3:
-                        ax2.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'b')
-                    ax2.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                    # ax2.text(width,height,''+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                    ax2.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
+
                 elif ind%3==1:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     # height=np.max( W_all[-1,:,cb] + O1 + O2*h)+Wstd
                     if rstssize[ind]==0:
-                        ax3.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'r')
+                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
                     elif rstssize[ind]==1:
-                        ax3.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax3.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
+                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
                     elif rstssize[ind]==2:
-                        ax3.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax3.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
+                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
                     elif rstssize[ind]==3:
-                        ax3.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'b')
-                    ax3.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                    # ax3.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                    ax3.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
                 else:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     # height=np.max( W_all[-1,:,cb] + 2*O1 + O2*h)+Wstd
                     if rstssize[ind]==0:
-                        ax4.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'r')
+                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
                     elif rstssize[ind]==1:
-                        ax4.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax4.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
+                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
                     elif rstssize[ind]==2:
-                        ax4.plot(np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2), W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax4.plot(np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2), W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
+                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
                     elif rstssize[ind]==3:
-                        ax4.plot(np.linspace(lims[ind,0],lims[ind,1],D), W_all[-1,:,cb] + O2*h,'b')
-                    ax4.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                    # ax4.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
+                    ax4.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
 
                 h+=1
                 if h>hmax:
@@ -447,39 +464,43 @@ if series is not None and rseries is not None:
         # tloc = np.around(tloc,decimals=4)
         # tlab = np.around(tlab,decimals=4)
         # ax2.bar(these_lims,tnzero,trssize)
-        ax2.axis([s,s+l,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax2.axis([s,s+l,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
+        ax2.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
+        # ax2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax2.set_yticks(tloc)
         ax2.set_yticklabels(tlab)
         ax2.tick_params(axis='both',labelsize=18)
-        ax3.axis([s,s+l,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax3.axis([s,s+l,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
+        ax2.set_title("B.", marker_font_dict,loc='left')
+        ax3.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
+        # ax3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax3.set_yticks(tloc)
         ax3.set_yticklabels(tlab)
         ax3.tick_params(axis='both',labelsize=18)
-        ax4.axis([s,s+l,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax4.axis([s,s+l,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
+        ax3.set_title("C.", marker_font_dict,loc='left')
+        ax4.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
+        # ax4.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax4.set_yticks(tloc)
         ax4.set_yticklabels(tlab)
         ax4.tick_params(axis='both',labelsize=18)
+        ax4.set_title("D.", marker_font_dict,loc='left')
+
+
 
 
         # ax6=plt.subplot2grid((7,1),(5,0),rowspan=2)
         # ax6.bar(these_lims,tmass,trssize)
-        # ax6.axis([s,s+l,0,hmax*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
+        # ax6.axis([lim_x1,lim_x2,0,hmax*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
         # ax6.tick_params(axis='both',labelsize=12)
 
 
 
         for i in range(these_lims.shape[0]):
-            ax1.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-            # ax2.axvline(x=these_lims[i],ymin=-0.2,ymax=1.2,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-            ax2.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-            ax3.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-            ax4.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+            ax1.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+            ax2.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+            ax3.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
+            ax4.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
             # ax5.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
         fig.tight_layout()
-        # fig.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
+        # fig.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(lim_x1,lim_x2), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
         fig.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
         # fig.savefig(outputdir+'reconstructions/'+'small_series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
         # fig.savefig(outputdir+'reconstructions/'+'series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,lgd2), bbox_inches = 'tight')
