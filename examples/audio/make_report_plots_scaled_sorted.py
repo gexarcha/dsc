@@ -483,6 +483,7 @@ if series is not None and rseries is not None:
         ax4.tick_params(axis='both',labelsize=18)
         ax4.set_title("D.", marker_font_dict,loc='left')
 
+        ax4.set_xlabel("ms")
 
 
 
