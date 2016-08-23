@@ -216,6 +216,7 @@ title_font_dict = {"fontsize":"12"}
 marker_font_dict = {"fontsize":"16"}
 title_font_dict = None # {"fontsize":"12"}
 marker_font_dict = None #{"fontsize":"16"}
+time_scale = 1000/sampling_rate
 if series is not None and rseries is not None:
 	IC = series.squeeze()[5,:].squeeze()
 	series = series.squeeze()[channel,:].squeeze()
@@ -309,7 +310,6 @@ if series is not None and rseries is not None:
 		if os.path.exists(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l)) and os.path.exists(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l)):
 			continue
 	# for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
-		time_scale = 1000/sampling_rate
 		lim_x1=s*time_scale
 		lim_x2=(s+l)*time_scale
 		fig_decomp = plt.figure(1,(12,20))
