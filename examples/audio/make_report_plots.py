@@ -15,6 +15,8 @@ outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-17+21:16/'
 outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-23+01:56/'
 outputdir = 'output/'+'dsc_on_hc1_run.py.2016-03-23+13:05/'
 outputdir = 'output/'+'dsc_run_audio.py.2016-04-21+09:50/'
+outputdir = 'output/'+'dsc_run_audio.py.d570370/'
+
 ofile = outputdir+'result.h5'
 
 fh =tb.open_file(ofile,'r')
