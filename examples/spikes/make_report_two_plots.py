@@ -467,8 +467,8 @@ if series is not None and rseries is not None:
 			ax_decomp_3.axvline(x=these_lims[i]*time_scale,ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 		# fig_decomp.tight_layout(rect=[0,0,1,0.9])
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
-		sup1=fig_decomp.suptitle(r"\textbf{EC signal discretization}")
-		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,sup1), bbox_inches = 'tight',dpi=600)
+		# sup1=fig_decomp.suptitle(r"\textbf{EC signal discretization}")
+		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,lgd2), bbox_inches = 'tight')
 		plt.close(fig_decomp)
@@ -584,8 +584,8 @@ if series is not None and rseries is not None:
 			# ax_IC.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			# ax_diff.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 		
-		sup1=fig_rec.suptitle(r"\textbf{Accuracy of the reconstruction}")
-		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,sup1), bbox_inches = 'tight',dpi=600)
+		# sup1=fig_rec.suptitle(r"\textbf{Accuracy of the reconstruction}")
+		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
 		plt.close(fig_decomp)
 		plt.close(fig_rec)
 
