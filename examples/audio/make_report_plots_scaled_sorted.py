@@ -463,25 +463,29 @@ if series is not None and rseries is not None:
             tlab=["${}$".format(np.around(-np.std(W_all[-1]),decimals=4)),"${}$".format(0),"${}$".format(np.around(np.std(W_all[-1]),decimals=4))]
         # tloc = np.around(tloc,decimals=4)
         # tlab = np.around(tlab,decimals=4)
-        # ax2.bar(these_lims,tnzero,trssize)
+        
         ax2.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax2.set_yticks(tloc)
         ax2.set_yticklabels(tlab)
         ax2.tick_params(axis='both',labelsize=18)
         ax2.set_title("B.", marker_font_dict,loc='left')
+        ax2.set_title("$t-1$", fontdict=title_font_dict,loc='center')
+        
         ax3.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax3.set_yticks(tloc)
         ax3.set_yticklabels(tlab)
         ax3.tick_params(axis='both',labelsize=18)
         ax3.set_title("C.", marker_font_dict,loc='left')
+        ax3.set_title("$t$", fontdict=title_font_dict,loc='center')
+        
         ax4.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
-        # ax4.axis([lim_x1,lim_x2,np.min(W_all[-1])-3*Wstd,np.max(np.abs(W_all[-1]))+(hmax-1)*O2+3*Wstd],fontsize=18)
         ax4.set_yticks(tloc)
         ax4.set_yticklabels(tlab)
         ax4.tick_params(axis='both',labelsize=18)
         ax4.set_title("D.", marker_font_dict,loc='left')
+        ax4.set_title("$t+1$", fontdict=title_font_dict,loc='center')
+
+
 
         ax4.set_xlabel("ms")
 
