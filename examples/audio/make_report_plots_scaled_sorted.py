@@ -339,6 +339,8 @@ if series is not None and rseries is not None:
         # ax.yticks(fontsize=16)
         handles, labels = ax1.get_legend_handles_labels()
         lgd1 = ax1.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=16)
+        ax1.set_ylabel("pressure")
+
         ax1.set_title("A.", marker_font_dict,loc='left')
         ax1.set_title(r"Original and Reconstructed Signal", fontdict=title_font_dict,loc='center')
         # ax1.grid('on')
@@ -469,21 +471,21 @@ if series is not None and rseries is not None:
         ax2.set_yticklabels(tlab)
         ax2.tick_params(axis='both',labelsize=18)
         ax2.set_title("B.", marker_font_dict,loc='left')
-        ax2.set_title("$t-1$", fontdict=title_font_dict,loc='center')
+        ax2.set_title("$n-1$", fontdict=title_font_dict,loc='center')
         
         ax3.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax3.set_yticks(tloc)
         ax3.set_yticklabels(tlab)
         ax3.tick_params(axis='both',labelsize=18)
         ax3.set_title("C.", marker_font_dict,loc='left')
-        ax3.set_title("$t$", fontdict=title_font_dict,loc='center')
+        ax3.set_title("$n$", fontdict=title_font_dict,loc='center')
         
         ax4.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax4.set_yticks(tloc)
         ax4.set_yticklabels(tlab)
         ax4.tick_params(axis='both',labelsize=18)
         ax4.set_title("D.", marker_font_dict,loc='left')
-        ax4.set_title("$t+1$", fontdict=title_font_dict,loc='center')
+        ax4.set_title("$n+1$", fontdict=title_font_dict,loc='center')
 
 
 
