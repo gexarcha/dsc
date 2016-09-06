@@ -333,7 +333,7 @@ if series is not None and rseries is not None:
 		# xdata = np.linspace(s,s+l, l)
 		# print xdata.shape,orig.shape,recon.shape
 		ax_orig_recon_1.plot(xdata,orig,label='Original EC',color='blue')
-		ax_orig_recon_1.plot(xdata,recon,label='Reconstruction EC',color='red')
+		ax_orig_recon_1.plot(xdata,recon,label='Reconstruction EC',color='green')
 		ax_orig_recon_1.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_orig_recon_1.tick_params(axis='both',labelsize=12)
 		# ax.yticks(fontsize=16)
@@ -376,43 +376,43 @@ if series is not None and rseries is not None:
 				if ind%3==2:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'g')
 					elif rstssize[ind]==1:
-						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
-					elif rstssize[ind]==2:
-						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'g')
 						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+					elif rstssize[ind]==2:
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'g')
 					elif rstssize[ind]==3:
-						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_1.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				elif ind%3==1:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + O1 + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'g')
 					elif rstssize[ind]==1:
-						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
-					elif rstssize[ind]==2:
-						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'g')
 						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+					elif rstssize[ind]==2:
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'g')
 					elif rstssize[ind]==3:
-						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_2.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				else:
 					height=np.max( W_all[-1,:,hp] + O2*h)+2
 					# height=np.max( W_all[-1,:,hp] + 2*O1 + O2*h)+2
 					if rstssize[ind]==0:
-						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
+						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'g')
 					elif rstssize[ind]==1:
-						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'b')
-					elif rstssize[ind]==2:
-						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'b')
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'g')
 						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+					elif rstssize[ind]==2:
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
+						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'g')
 					elif rstssize[ind]==3:
-						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'b')
+						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_3.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
 				
 				h+=1
