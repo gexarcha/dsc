@@ -91,22 +91,22 @@ if not os.path.exists(outputdir+'filters'):
 	os.mkdir(outputdir+'filters')
 
 for e in range(0,epochs,10)[::-1]:
-	# minwg = -np.max(np.abs(W_all[e])) 
+	# minwg = -np.max(np.abs(W_all[e]))
 	# maxwg = -minwg
-	minwg = np.min(W_all[e]) 
-	maxwg = np.max(W_all[e]) 
-	meanw = np.mean(W_all) 
+	minwg = np.min(W_all[e])
+	maxwg = np.max(W_all[e])
+	meanw = np.mean(W_all)
 	if not os.path.exists('{}filters/W_e_{}.eps'.format(outputdir, e)):
 	# if not os.path.exists('{}montage_images/W_e_{:03}.eps'.format(outputdir, e)):
 		fig=plt.figure(2,(16,10))
 		for h in range(H):
 			this_W = W_all[e,:,h]
 			# this_W=this_W.reshape((psz,psz))
-			# minwl = -np.max(np.abs(this_W)) 
-			# maxwl = -minwl 
-			minwl = np.min(this_W) 
+			# minwl = -np.max(np.abs(this_W))
+			# maxwl = -minwl
+			minwl = np.min(this_W)
 			maxwl = np.max(this_W)
-			meanwl = np.mean(this_W) 
+			meanwl = np.mean(this_W)
 			if cscale == 'global':
 				maxw, minw = maxwg, minwg
 			elif cscale == 'local':
@@ -129,22 +129,22 @@ for e in range(0,epochs,10)[::-1]:
 		# os.system("montage -trim {}_images/W_e_{:03}_h*.jpg {}montage_images/W_e_{:03}.jpg".format(outputdir,e,outputdir,e))
 		# os.system("rm {}_images/W_e_{:03}_h*.jpg ".format(outputdir, e))
 # os.system("convert -delay 10 {}montage_images/* {}W_training.gif".format(outputdir,outputdir))
-# 
-minwg = np.min(W_all[-1]) 
-maxwg = np.max(W_all[-1]) 
+#
+minwg = np.min(W_all[-1])
+maxwg = np.max(W_all[-1])
 meanw = np.mean(W_all)
-e=-1 
+e=-1
 for h in range(H):
 	fig=plt.figure(2)
 	if os.path.exists(outputdir+'_images/'+'W_e_{:03}_h_{:03}.eps'.format(-1,h+1)):
 		continue
 	this_W = W_all[-1,:,h]
 	# this_W=this_W.reshape((psz,psz))
-	# minwl = -np.max(np.abs(this_W)) 
-	# maxwl = -minwl 
-	minwl = np.min(this_W) 
+	# minwl = -np.max(np.abs(this_W))
+	# maxwl = -minwl
+	minwl = np.min(this_W)
 	maxwl = np.max(this_W)
-	meanwl = np.mean(this_W) 
+	meanwl = np.mean(this_W)
 	if cscale == 'global':
 		maxw, minw = maxwg, minwg
 	elif cscale == 'local':
@@ -171,11 +171,11 @@ for e in range(epochs)[::-1]:
 
 	if not os.path.exists('{}montage_images/pi_broken_{:03}.jpg'.format(outputdir, e)):
 		f, (ax, ax2) = plt.subplots(2, 1, sharex=True)
-		ax.bar(states,pi_all[e,:],align='center')	
-		ax2.bar(states,pi_all[e,:],align='center')	
+		ax.bar(states,pi_all[e,:],align='center')
+		ax2.bar(states,pi_all[e,:],align='center')
 		yl = pi_all[e,np.argsort(pi_all[e,:])[:-1]].sum()*1.25
-		ax.set_ylim(1.-yl ,1.)	
-		ax2.set_ylim(0,yl)	
+		ax.set_ylim(1.-yl ,1.)
+		ax2.set_ylim(0,yl)
 		# hide the spines between ax and ax2
 		ax.spines['bottom'].set_visible(False)
 		ax2.spines['top'].set_visible(False)
@@ -194,7 +194,7 @@ for e in range(epochs)[::-1]:
 		ax2.plot((-d, +d), (1 - d, 1 + d), **kwargs)  # bottom-left diagonal
 		ax2.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)  # bottom-right diagonal
 
-		# We change the fontsize of minor ticks label 
+		# We change the fontsize of minor ticks label
 		# ax.tick_params(axis='both', which='major', labelsize=20)
 		# ax.tick_params(axis='both', which='minor', labelsize=20)
 		ax2.set_xticks(states)
@@ -205,8 +205,8 @@ for e in range(epochs)[::-1]:
 		# ax2.tick_params(axis='x', which='major', labelsize=20, length=1)
 		# ax2.tick_params(axis='x', which='minor', labelsize=20, length=1)
 		f.savefig(outputdir+'montage_images/pi_broken_{:03}.jpg'.format(e))
-		plt.close(f) 
- 
+		plt.close(f)
+
 
 state_list = []
 std_series=None
@@ -239,8 +239,8 @@ if series is not None and rseries is not None:
 	lims2 = [0]
 	lims3 = [lims[0]]
 	rsts = [rs[0]]
-	rstssize = [0] # 0 means full, 1 means first half, 2 means second half, 3 means missing 
-	# import ipdb; ipdb.set_trace() 
+	rstssize = [0] # 0 means full, 1 means first half, 2 means second half, 3 means missing
+	# import ipdb; ipdb.set_trace()
 	# Reconstruction code
 	# for n in tqdm.tqdm(range(1,N),'reconstructing'):
 	for n in range(1,N):
@@ -280,14 +280,14 @@ if series is not None and rseries is not None:
 	rsts=np.array(rsts)
 	mass =np.zeros((rsts.shape[0],))
 	rstssize = np.array(rstssize)
-	# Store how active is the neuron 
+	# Store how active is the neuron
 	for i in range(4):
 		newinds = rstssize[rstssize!=3]
 		tmass=mass[newinds==i]
 		for j in range(tmass.shape[0]):
 			tmass[j]=np.sum(np.mean(np.abs(W_all[-1,:,:]),0)*rsts[newinds==i][j])
 		# mass[newinds==i]=np.sum(np.abs(rsts[newinds==i]),1)
-		# 
+		#
 		mass[newinds==i]=tmass
 	if rstssize[rstssize!=3].shape[0]!=rsts.shape[0]:
 		import ipdb; ipdb.set_trace()  # breakpoint 6783ebf8 //
@@ -347,11 +347,11 @@ if series is not None and rseries is not None:
 
 		# plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(s,s+l))
 		# if not os.path.exists('{}montage_images/orig_{:03}.jpg'.format(outputdir, e)):
-		
+
 		inds = np.arange(N)
 		inds = inds[1==((lims[:,0]>=s) * (lims[:,1]<s+l))]
 		# tlims = tlims[tlims[:,1]<s+l,:]
-		
+
 		tlims = lims[inds,:]
 		ltrssize = rstssize[inds]
 		ax_decomp_1=plt.subplot2grid((4,1),(1,0))
@@ -414,9 +414,9 @@ if series is not None and rseries is not None:
 					elif rstssize[ind]==3:
 						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_3.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
-				
+
 				h+=1
-		
+
 		#make good ticks
 		ticmax= np.int(np.max(np.abs(W_all[-1,:,:])))
 		ticmin= -ticmax
@@ -439,7 +439,7 @@ if series is not None and rseries is not None:
 		ax_decomp_1.set_title("B.", marker_font_dict,loc='left')
 		ax_decomp_1.set_title("$n-1$", fontdict=title_font_dict,loc='center')
 		# ax_decomp_1.set_ylabel("mV [400-4000]Hz")
-		
+
 		ax_decomp_2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_2.set_yticks(tloc)
 		ax_decomp_2.set_yticklabels(tlab)
@@ -448,7 +448,7 @@ if series is not None and rseries is not None:
 		ax_decomp_2.set_title("C.", marker_font_dict,loc='left')
 		ax_decomp_2.set_title("$n$", fontdict=title_font_dict,loc='center')
 		# ax_decomp_2.set_ylabel("mV [400-4000]Hz")
-		
+
 		ax_decomp_3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_3.set_yticks(tloc)
 		ax_decomp_3.set_yticklabels(tlab)
@@ -474,17 +474,17 @@ if series is not None and rseries is not None:
 		plt.close(fig_decomp)
 		fig_rec = plt.figure(1,(12,20))
 
-		
+
 		ax_orig_recon_2 = plt.subplot2grid((4,1),(0,0))
 		ax_orig_recon_2.plot(xdata,orig,label='Original EC',color='blue')
-		ax_orig_recon_2.plot(xdata,recon,label='Reconstruction EC',linestyle='dashed',color='red')
+		ax_orig_recon_2.plot(xdata,recon,label='Reconstruction EC',linestyle='dashed',color='green')
 		ax_orig_recon_2.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_orig_recon_2.tick_params(axis='both',labelsize=12)
 		ax_orig_recon_2.plot(xdata,5*std_series*np.ones_like(xdata),linestyle='dashed',label='$5 \\times \sigma_{orig}$',color='black')
 		ax_orig_recon_2.plot(xdata,-5*std_series*np.ones_like(xdata),linestyle='dashed',color='black')
 		# ax.yticks(fontsize=16)
-		ax_orig_recon_2.plot(xdata,5*sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',label='$5 \\times \sigma_{model}$',color='green')
-		ax_orig_recon_2.plot(xdata,-5*sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',color='green')
+		ax_orig_recon_2.plot(xdata,5*sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',label='$5 \\times \sigma_{model}$',color='yellow')
+		ax_orig_recon_2.plot(xdata,-5*sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',color='yellow')
 		# ax.yticks(fontsize=16)
 		handles, labels = ax_orig_recon_2.get_legend_handles_labels()
 		lgd1 = ax_orig_recon_2.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
@@ -495,7 +495,7 @@ if series is not None and rseries is not None:
 		# ax_orig_recon_1.grid('on')
 
 		ax_diff = plt.subplot2grid((4,1),(1,0))
-		ax_diff.plot(xdata,recon-orig,label='difference',color='green')
+		ax_diff.plot(xdata,recon-orig,label='difference',color='red')
 		#std
 		#
 		# ax_diff.plot(xdata,diff_std*np.ones_like(xdata),label='std of difference',color='black')
@@ -524,7 +524,7 @@ if series is not None and rseries is not None:
 		lgd2 = ax_diff.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		# ax_orig_recon_1.grid('on')
 
-		
+
 
 		ax_IC = plt.subplot2grid((4,1),(2,0))
 		ax_IC.plot(xdata,thisIC,label='IC')
@@ -583,7 +583,7 @@ if series is not None and rseries is not None:
 			# ax_decomp_1.axvline(x=these_lims[i],ymin=-0.2,ymax=1.2,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			# ax_IC.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 			# ax_diff.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
-		
+
 		# sup1=fig_rec.suptitle(r"\textbf{Accuracy of the reconstruction}")
 		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
 		plt.close(fig_decomp)
