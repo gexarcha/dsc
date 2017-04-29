@@ -332,8 +332,8 @@ if series is not None and rseries is not None:
         yliml = np.minimum(yliml,-stdrs)
         ylimu = np.maximum(maxbl,stds)
         ylimu = np.maximum(ylimu,stdrs)
-        ax1.plot(xdata,orig,label='Original',color='blue')
-        ax1.plot(xdata,recon,label='Reconstruction',color='red')
+        ax1.plot(xdata,orig,label='Original',color='black')
+        ax1.plot(xdata,recon,label='Reconstruction',color='lime')
         ax1.axis([lim_x1,lim_x2,yliml,ylimu],fontsize=18)
         ax1.tick_params(axis='both',labelsize=18)
         # ax.yticks(fontsize=16)
@@ -392,15 +392,15 @@ if series is not None and rseries is not None:
                 if ind%3==2:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     if rstssize[ind]==0:
-                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
+                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
+                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
+                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
-                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                        ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax2.text(width,height,''+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
                     ax2.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
 
@@ -408,30 +408,30 @@ if series is not None and rseries is not None:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     # height=np.max( W_all[-1,:,cb] + O1 + O2*h)+Wstd
                     if rstssize[ind]==0:
-                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
+                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
+                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
+                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
-                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                        ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax3.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
                     ax3.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
                 else:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     # height=np.max( W_all[-1,:,cb] + 2*O1 + O2*h)+Wstd
                     if rstssize[ind]==0:
-                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'r')
+                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'r')
-                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'b')
+                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
+                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'b')
-                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'r')
+                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
+                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
-                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'b')
+                        ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax4.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
                     ax4.text(width,height,'{}x{}'.format(cb+1,b),fontsize=8)
 
