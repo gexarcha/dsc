@@ -18,7 +18,7 @@ outputdir = 'output/'+'dsc_run_audio.py.2016-04-21+09:50/'
 outputdir = 'output/'+'dsc_run_audio.py.d570370/'
 # outputdir = 'output/'+'dsc_run_audio.py.d587969/'
 ofile = outputdir+'result.h5'
-print outputdir
+print(outputdir)
 fh =tb.open_file(ofile,'r')
 sampling_rate=16000.
 
@@ -130,8 +130,8 @@ for e in range(0,epochs)[::-1]:
             ax.axis('off')
             # ax.clf()
             if h%30 == 0 :
-                print "Finished epoch {:03} basis {:03}".format(e,h)
-                print "\tPlot settings scale: '{}', min: {}, max: {}, mean:{}".format(cscale,minwg,maxwg,meanw)
+                print("Finished epoch {:03} basis {:03}".format(e,h))
+                print("\tPlot settings scale: '{}', min: {}, max: {}, mean:{}".format(cscale,minwg,maxwg,meanw))
                 # ax.clf()
         plt.tight_layout()
         fig.savefig(outputdir+'filters/W_e_{:03}.eps'.format(e), bbox_inches = 'tight',dpi=600)
@@ -292,7 +292,7 @@ if series is not None and rseries is not None:
     scaled_rseries = np.int16(reconseries2/np.max(np.abs(reconseries2))*32767)
     write(outputdir+'original.wav',16000,scaled_series)
     write(outputdir+'reconstruction.wav',16000,scaled_rseries)
-    print "wrote audio files"
+    print("wrote audio files")
     c=0
     for s in range(0,T-l,l):
         print(c)
@@ -372,7 +372,7 @@ if series is not None and rseries is not None:
                 if O2tmp>O2:
                     O2=O2tmp
         O2*=2.5
-        print O2
+        print (O2)
         hmax=-1
         Wstd = np.std(W_all[-1,:,:])
         for ind in inds:
@@ -471,21 +471,21 @@ if series is not None and rseries is not None:
         ax2.set_yticklabels(tlab)
         ax2.tick_params(axis='both',labelsize=18)
         ax2.set_title("B.", marker_font_dict,loc='left')
-        ax2.set_title("$n-1$", fontdict=title_font_dict,loc='center')
+        ax2.set_title("$t-1$", fontdict=title_font_dict,loc='center')
         
         ax3.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax3.set_yticks(tloc)
         ax3.set_yticklabels(tlab)
         ax3.tick_params(axis='both',labelsize=18)
         ax3.set_title("C.", marker_font_dict,loc='left')
-        ax3.set_title("$n$", fontdict=title_font_dict,loc='center')
+        ax3.set_title("$t$", fontdict=title_font_dict,loc='center')
         
         ax4.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax4.set_yticks(tloc)
         ax4.set_yticklabels(tlab)
         ax4.tick_params(axis='both',labelsize=18)
         ax4.set_title("D.", marker_font_dict,loc='left')
-        ax4.set_title("$n+1$", fontdict=title_font_dict,loc='center')
+        ax4.set_title("$t+1$", fontdict=title_font_dict,loc='center')
 
 
 
@@ -523,4 +523,4 @@ plt.clf()
 plt.plot(sigma_all,label='$\sigma$')
 plt.savefig(outputdir+'sigma.jpg')
 plt.clf()
-print "state_list holds the states of interest"
+print("state_list holds the states of interest")

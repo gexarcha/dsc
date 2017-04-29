@@ -125,8 +125,8 @@ for e in range(0,epochs)[::-1]:
 
             # ax.clf()
             if h%30 == 0 :
-                print "Finished epoch {:03} basis {:03}".format(e,h)
-                print "\tPlot settings scale: '{}', min: {}, max: {}, mean:{}".format(cscale,minwg,maxwg,meanw)
+                print("Finished epoch {:03} basis {:03}".format(e,h))
+                print("\tPlot settings scale: '{}', min: {}, max: {}, mean:{}".format(cscale,minwg,maxwg,meanw))
                 # ax.clf()
         plt.tight_layout()
         fig.savefig(outputdir+'filters/W_e_{:03}.eps'.format(e), bbox_inches = 'tight',dpi=600)
@@ -233,7 +233,7 @@ if series is not None and rseries is not None:
     scaled_rseries = np.int16(reconseries2/np.max(np.abs(reconseries2))*32767)
     write(outputdir+'original.wav',16000,scaled_series)
     write(outputdir+'reconstruction.wav',16000,scaled_rseries)
-    print "wrote audio files"
+    print("wrote audio files")
     c=0
     for s in tqdm.tqdm(range(0,T-l,l),'plotting'):
     # for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
@@ -403,4 +403,4 @@ plt.clf()
 plt.plot(sigma_all,label='$\sigma$')
 plt.savefig(outputdir+'sigma.jpg')
 plt.clf()
-print "state_list holds the states of interest"
+print("state_list holds the states of interest")

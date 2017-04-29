@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+# plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 plt.rc('text', usetex=True)
 import tables as tb
 import os
@@ -87,6 +87,8 @@ if not os.path.exists(outputdir+'_images'):
 	os.mkdir(outputdir+'_images')
 if not os.path.exists(outputdir+'reconstructions'):
 	os.mkdir(outputdir+'reconstructions')
+if not os.path.exists(outputdir+'reconstructions2'):
+	os.mkdir(outputdir+'reconstructions2')
 if not os.path.exists(outputdir+'filters'):
 	os.mkdir(outputdir+'filters')
 
@@ -210,8 +212,8 @@ for e in range(epochs)[::-1]:
 
 state_list = []
 std_series=None
-print series
-print rseries
+print (series)
+print (rseries)
 title_font_dict = {"fontsize":"12"}
 marker_font_dict = {"fontsize":"16"}
 title_font_dict = None # {"fontsize":"12"}
@@ -222,7 +224,7 @@ if series is not None and rseries is not None:
 	series = series.squeeze()[channel,:].squeeze()
 	rseries = rseries.squeeze()
 	T = rseries.shape[0]
-	l = 1000
+	l = 500
 	s=0
 	step=int(D*(1-overlap))
 	reconstates = []
@@ -307,7 +309,7 @@ if series is not None and rseries is not None:
 	# import ipdb; ipdb.set_trace()  # breakpoint 3ef80612 //
 	# for s in range(0,T-l,l):
 	for s in range(0,T-l,l):
-		if os.path.exists(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l)) and os.path.exists(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l)):
+		if os.path.exists(outputdir+'reconstructions2/'+'series_{}_{}_decomposition.eps'.format(s,s+l)) and os.path.exists(outputdir+'reconstructions2/'+'series_{}_{}_rec.eps'.format(s,s+l)):
 			continue
 	# for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
 		lim_x1=s*time_scale
@@ -378,11 +380,11 @@ if series is not None and rseries is not None:
 					if rstssize[ind]==0:
 						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'lime')
 					elif rstssize[ind]==1:
-						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'lime')
-						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'lime')
+						ax_decomp_1.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'r')
 					elif rstssize[ind]==2:
-						ax_decomp_1.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_1.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'lime')
+						ax_decomp_1.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'r')
+						ax_decomp_1.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'lime')
 					elif rstssize[ind]==3:
 						ax_decomp_1.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_1.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
@@ -392,11 +394,11 @@ if series is not None and rseries is not None:
 					if rstssize[ind]==0:
 						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'lime')
 					elif rstssize[ind]==1:
-						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'lime')
-						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'lime')
+						ax_decomp_2.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'r')
 					elif rstssize[ind]==2:
-						ax_decomp_2.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_2.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'lime')
+						ax_decomp_2.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'r')
+						ax_decomp_2.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'lime')
 					elif rstssize[ind]==3:
 						ax_decomp_2.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_2.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
@@ -406,11 +408,11 @@ if series is not None and rseries is not None:
 					if rstssize[ind]==0:
 						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'lime')
 					elif rstssize[ind]==1:
-						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'lime')
-						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'r')
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'lime')
+						ax_decomp_3.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'r')
 					elif rstssize[ind]==2:
-						ax_decomp_3.plot(half_xdata1, W_all[-1,:D/2,hp] + O2*h,'r')
-						ax_decomp_3.plot(half_xdata2, W_all[-1,D/2:,hp] + O2*h,'lime')
+						ax_decomp_3.plot(half_xdata1, W_all[-1,:D//2,hp] + O2*h,'r')
+						ax_decomp_3.plot(half_xdata2, W_all[-1,D//2:,hp] + O2*h,'lime')
 					elif rstssize[ind]==3:
 						ax_decomp_3.plot(full_xdata, W_all[-1,:,hp] + O2*h,'r')
 					ax_decomp_3.text(width,height,'{}x{}'.format(hp+1,b),fontsize=8)
@@ -437,7 +439,7 @@ if series is not None and rseries is not None:
 		ax_decomp_1.tick_params(axis='both',labelsize=12)
 		# ax_decomp_1.set_xlabel("ms")
 		ax_decomp_1.set_title("B.", marker_font_dict,loc='left')
-		ax_decomp_1.set_title("$n-1$", fontdict=title_font_dict,loc='center')
+		ax_decomp_1.set_title("$t-1$", fontdict=title_font_dict,loc='center')
 		# ax_decomp_1.set_ylabel("mV [400-4000]Hz")
 
 		ax_decomp_2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
@@ -446,7 +448,7 @@ if series is not None and rseries is not None:
 		ax_decomp_2.tick_params(axis='both',labelsize=12)
 		# ax_decomp_2.set_xlabel("ms")
 		ax_decomp_2.set_title("C.", marker_font_dict,loc='left')
-		ax_decomp_2.set_title("$n$", fontdict=title_font_dict,loc='center')
+		ax_decomp_2.set_title("$t$", fontdict=title_font_dict,loc='center')
 		# ax_decomp_2.set_ylabel("mV [400-4000]Hz")
 
 		ax_decomp_3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
@@ -455,7 +457,7 @@ if series is not None and rseries is not None:
 		ax_decomp_3.tick_params(axis='both',labelsize=12)
 		ax_decomp_3.set_xlabel("ms")
 		ax_decomp_3.set_title("D.", marker_font_dict,loc='left')
-		ax_decomp_3.set_title("$n+1$", fontdict=title_font_dict,loc='center')
+		ax_decomp_3.set_title("$t+1$", fontdict=title_font_dict,loc='center')
 		# ax_decomp_3.set_ylabel("mV [400-4000]Hz")
 
 
@@ -468,7 +470,7 @@ if series is not None and rseries is not None:
 		# fig_decomp.tight_layout(rect=[0,0,1,0.9])
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
 		# sup1=fig_decomp.suptitle(r"\textbf{EC signal discretization}")
-		fig_decomp.savefig(outputdir+'reconstructions/'+'series_decomp_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
+		fig_decomp.savefig(outputdir+'reconstructions2/'+'series_{}_{}_decomposition.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'small_series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight')
 		# fig_decomp.savefig(outputdir+'reconstructions/'+'series_{}_{}_n.jpg'.format(s,s+l), bbox_extra_artists=(lgd1,lgd2), bbox_inches = 'tight')
 		plt.close(fig_decomp)
@@ -585,7 +587,7 @@ if series is not None and rseries is not None:
 			# ax_diff.axvline(x=these_lims[i],ymin=0,ymax=1,c="green",linewidth=.5,zorder=0, clip_on=False,ls='dotted')
 
 		# sup1=fig_rec.suptitle(r"\textbf{Accuracy of the reconstruction}")
-		fig_rec.savefig(outputdir+'reconstructions/'+'series_rec_{}_{}.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
+		fig_rec.savefig(outputdir+'reconstructions2/'+'series_{}_{}_rec.eps'.format(s,s+l), bbox_extra_artists=(lgd1,), bbox_inches = 'tight',dpi=600)
 		plt.close(fig_decomp)
 		plt.close(fig_rec)
 
@@ -603,4 +605,4 @@ plt.axis([0,200,10,22])
 plt.legend()
 plt.savefig(outputdir+'sigma.jpg')
 plt.clf()
-print "state_list holds the states of interest"
+print("state_list holds the states of interest")
