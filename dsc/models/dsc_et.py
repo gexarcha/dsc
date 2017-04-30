@@ -2,7 +2,7 @@
 #  Lincense: Academic Free License (AFL) v3.0
 #
 
-from __future__ import division
+
 
 import numpy as np
 from mpi4py import MPI
@@ -82,7 +82,7 @@ class DSC_ET(DModel):
             # l_pis+=self.state_abs[i]*pi[i]
         # Allocate return structures
         F = np.empty( [my_N, nss] )
-        for n in xrange(my_N):
+        for n in range(my_N):
             y    = data['y'][n,:]
 
             Wbar = np.dot(SSM,W)
@@ -110,7 +110,7 @@ class DSC_ET(DModel):
         uniform = np.random.uniform
         comm = self.comm
 
-        for param, policy in self.noise_policy.items():
+        for param, policy in list(self.noise_policy.items()):
             pvalue = model_params[param]
             if (not param+'_noise'=='pi_noise') and anneal[param+"_noise"] != 0.0:
                 if np.isscalar(pvalue):         # Param to be noisified is scalar
@@ -191,14 +191,14 @@ class DSC_ET(DModel):
 ###########################################################################
         pre_F[0]  =   self.H * np.log(pi[self.K_0])
         c=0
-        for state in xrange(self.K):
+        for state in range(self.K):
             if state == self.K_0:
                 continue
             pre_F[c*H+1:(c+1)*H+1]  =   np.log(pi[state]) + ((self.H-1)*np.log(pi[self.K_0]))
             c+=1
         pre_F[(self.K-1)*H+1:]  =   l_pis
         pp("E_step: Before data loop")
-        for n in xrange(my_N):
+        for n in range(my_N):
             y    = my_data['y'][n,:]
             cand = my_data['candidates'][n,:]
             # print "cand  ", cand
@@ -281,7 +281,7 @@ class DSC_ET(DModel):
         SM = self.SM
 
         # Iterate over all datapoints
-        for n in xrange(my_N):
+        for n in range(my_N):
             y = my_y[n, :]                  # length D
             cand = candidates[n, :]  # length Hprime
             pjb = pjb_all[n, :]
@@ -297,7 +297,7 @@ class DSC_ET(DModel):
             #FIX: I am sure I need to multiply with pi somewhere here
             c=0
             # import ipdb;ipdb.set_trace()
-            for state in xrange(self.K):
+            for state in range(self.K):
                 if state == self.K_0:
                     continue
                 sspjb = pjb[c*self.H+1:(c+1)*self.H+1]
@@ -351,7 +351,7 @@ class DSC_ET(DModel):
         # Calculate updated pi
         pi_new=np.empty_like(pi)
         # pi_new = E_pi_gamma * comm.allreduce(my_pi) / H / N_use
-        for i in xrange(self.K):
+        for i in range(self.K):
             pi_new[i]  = comm.allreduce(my_pi[i])/comm.allreduce(my_pi.sum())
 
         eps = 1e-6
@@ -361,7 +361,7 @@ class DSC_ET(DModel):
             pi_new[which_lo] += eps - pi_new[which_lo]
             pi_new[which_hi] -= (eps*np.sum(which_lo))/np.sum(which_hi)
 
-        if 'penalty' in self.__dict__.keys():
+        if 'penalty' in list(self.__dict__.keys()):
             self.penalty
             if self.penalty>pi_new[self.K_0]:
                 r = (1-self.penalty)/(1-pi_new[self.K_0])

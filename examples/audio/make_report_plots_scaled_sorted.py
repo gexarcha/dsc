@@ -121,9 +121,9 @@ for e in range(0,epochs)[::-1]:
                 maxw, minw = maxwl, minwl
             ax = fig.add_subplot(13,8,h+1)
             plt.locator_params(nbins=4)
-            ax.plot(np.linspace(0,D/10,num=D) ,this_W)#scale in kHz
-            ax.axis([0,D/10,minwg,maxwg],fontsize=16)
-            # ax.axis([0,D/10,minwl,maxwl],fontsize=16)
+            ax.plot(np.linspace(0,D//10,num=D) ,this_W)#scale in kHz
+            ax.axis([0,D//10,minwg,maxwg],fontsize=16)
+            # ax.axis([0,D//10,minwl,maxwl],fontsize=16)
             # ax.savefig(outputdir+'_images/'+'W_e_{:03}_h_{:03}.jpg'.format(e,h))
             ax.set_title("$W_{"+str(h+1)+"}$",fontsize=20)
             ax.tick_params(axis='both',labelsize=20)
@@ -175,11 +175,15 @@ for e in range(0,epochs)[::-1]:
 
         # We change the fontsize of minor ticks label 
         ax.set_xticks([])
-        ax.tick_params(axis='x', which='major', length=1)
-        ax.tick_params(axis='x', which='minor', length=1)
+        ax.tick_params(axis='x', which='major', length=1, labelsize=20)
+        ax.tick_params(axis='x', which='minor', length=1, labelsize=20)
+        ax.tick_params(axis='both', which='major', labelsize=20)
+        ax.tick_params(axis='both', which='minor', labelsize=20)
         ax2.set_xticks(states)
-        ax2.tick_params(axis='x', which='major', length=1)
-        ax2.tick_params(axis='x', which='minor', length=1)
+        ax2.tick_params(axis='x', which='major', length=1, labelsize=20)
+        ax2.tick_params(axis='x', which='minor', length=1, labelsize=20)
+        ax2.tick_params(axis='both', which='major', labelsize=20)
+        ax2.tick_params(axis='both', which='minor', labelsize=20)
         f.savefig(outputdir+'montage_images/pi_broken_{:03}.jpg'.format(e))
         plt.close(f)
 
@@ -296,6 +300,8 @@ if series is not None and rseries is not None:
     c=0
     for s in range(0,T-l,l):
         print(c)
+        if os.path.exists(outputdir+'reconstructions/'+'small_series_{}_{}.eps'.format(s,s+l)):
+            continue
     # for s in tqdm.tqdm(range(30000,T-l,l),'plotting'):
         lim_x1=s*time_scale
         lim_x2=(s+l)*time_scale
@@ -339,10 +345,10 @@ if series is not None and rseries is not None:
         # ax.yticks(fontsize=16)
         handles, labels = ax1.get_legend_handles_labels()
         lgd1 = ax1.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=16)
-        ax1.set_ylabel("pressure")
+        ax1.set_ylabel("pressure",fontsize=24)
 
         ax1.set_title("A.", marker_font_dict,loc='left')
-        ax1.set_title(r"Original and Reconstructed Signal", fontdict=title_font_dict,loc='center')
+        ax1.set_title(r"Original and Reconstructed Signal", fontsize=24, fontdict=title_font_dict,loc='center')
         # ax1.grid('on')
 
         # plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(lim_x1,lim_x2))
@@ -386,19 +392,19 @@ if series is not None and rseries is not None:
                 height = None
 
                 full_xdata = np.linspace(lims[ind,0],lims[ind,1],D)*time_scale
-                half_xdata1 = np.linspace(lims[ind,0],lims[ind,0]+(D/2),D/2)*time_scale
-                half_xdata2 = np.linspace(lims[ind,0]+(D/2),lims[ind,1],D/2)*time_scale
+                half_xdata1 = np.linspace(lims[ind,0],lims[ind,0]+(D//2),D//2)*time_scale
+                half_xdata2 = np.linspace(lims[ind,0]+(D//2),lims[ind,1],D//2)*time_scale
 
                 if ind%3==2:
                     height=np.max( W_all[-1,:,cb] )+ O2*h + Wstd
                     if rstssize[ind]==0:
                         ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
-                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
+                        ax2.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'lime')
+                        ax2.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax2.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
-                        ax2.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
+                        ax2.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'red')
+                        ax2.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
                         ax2.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax2.text(width,height,''+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
@@ -410,11 +416,11 @@ if series is not None and rseries is not None:
                     if rstssize[ind]==0:
                         ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
-                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
+                        ax3.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'lime')
+                        ax3.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax3.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
-                        ax3.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
+                        ax3.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'red')
+                        ax3.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
                         ax3.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax3.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
@@ -425,11 +431,11 @@ if series is not None and rseries is not None:
                     if rstssize[ind]==0:
                         ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'lime')
                     elif rstssize[ind]==1:
-                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'lime')
-                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'red')
+                        ax4.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'lime')
+                        ax4.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'red')
                     elif rstssize[ind]==2:
-                        ax4.plot(half_xdata1, W_all[-1,:D/2,cb] + O2*h,'red')
-                        ax4.plot(half_xdata2, W_all[-1,D/2:,cb] + O2*h,'lime')
+                        ax4.plot(half_xdata1, W_all[-1,:D//2,cb] + O2*h,'red')
+                        ax4.plot(half_xdata2, W_all[-1,D//2:,cb] + O2*h,'lime')
                     elif rstssize[ind]==3:
                         ax4.plot(full_xdata, W_all[-1,:,cb] + O2*h,'red')
                     # ax4.text(width,height,'$W_{'+str(cb+1)+'}$'+'$\\times {}$'.format(b),fontsize=10)
@@ -470,26 +476,26 @@ if series is not None and rseries is not None:
         ax2.set_yticks(tloc)
         ax2.set_yticklabels(tlab)
         ax2.tick_params(axis='both',labelsize=18)
-        ax2.set_title("B.", marker_font_dict,loc='left')
-        ax2.set_title("$t-1$", fontdict=title_font_dict,loc='center')
+        ax2.set_title("B.", marker_font_dict,fontsize=24,loc='left')
+        ax2.set_title("$t-1$", fontdict=title_font_dict,fontsize=24,loc='center')
         
         ax3.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax3.set_yticks(tloc)
         ax3.set_yticklabels(tlab)
         ax3.tick_params(axis='both',labelsize=18)
-        ax3.set_title("C.", marker_font_dict,loc='left')
-        ax3.set_title("$t$", fontdict=title_font_dict,loc='center')
+        ax3.set_title("C.", marker_font_dict,fontsize=24,loc='left')
+        ax3.set_title("$t$", fontdict=title_font_dict,fontsize=24,loc='center')
         
         ax4.axis([lim_x1,lim_x2,-3*Wstd,hmax*O2+Wstd],fontsize=18)
         ax4.set_yticks(tloc)
         ax4.set_yticklabels(tlab)
         ax4.tick_params(axis='both',labelsize=18)
-        ax4.set_title("D.", marker_font_dict,loc='left')
-        ax4.set_title("$t+1$", fontdict=title_font_dict,loc='center')
+        ax4.set_title("D.", marker_font_dict,fontsize=24,loc='left')
+        ax4.set_title("$t+1$", fontdict=title_font_dict,fontsize=24,loc='center')
 
 
 
-        ax4.set_xlabel("ms")
+        ax4.set_xlabel("ms",fontsize=24)
 
 
 

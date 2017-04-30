@@ -16,8 +16,8 @@ import tqdm
 outputdir = 'output/'+'dsc_run.py.d3981/' #dDSC
 outputdir = 'output/'+'dsc_run.py.d3985/' #tDSC
 outputdir = 'output/'+'dsc_run.py.d4097/' #bDSC 
-outputdir = 'output/'+'dsc_run.py.d796458/' #aDSC 
-outputdir = 'output/'+'dsc_run.py.d802072/' #aDSC 
+# outputdir = 'output/'+'dsc_run.py.d796458/' #aDSC 
+# outputdir = 'output/'+'dsc_run.py.d802072/' #aDSC 
 ofile = outputdir+'result.h5'
 gabparams=np.loadtxt(outputdir+'MatchedGaborParameters.txt')
 dogparams=np.loadtxt(outputdir+'MatchedMaxicanHatParameters.txt')

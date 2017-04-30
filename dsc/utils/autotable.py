@@ -58,7 +58,7 @@ class AutoTable:
         self.warnings = True
         if fname is None:
             fname = self._guess_fname()
-        self.h5 = tables.openFile(fname, "w")
+        self.h5 = tables.open_file(fname, "w")
         self.compression_level = compression_level
         self.tables = {}
         self.types = {}
@@ -112,7 +112,7 @@ class AutoTable:
             raise TypeError("Don't know how to handle values of type '%s'", type(value))
 
         # Check if we need to create a new table
-        if not self.tables.has_key(name):
+        if name not in self.tables:
             self._create_table(name, value)
 
         value = value.reshape( (1,)+value.shape )
@@ -151,11 +151,11 @@ class AutoTable:
         if not isinstance(value, np.ndarray):
             raise TypeError("Don't know how to handle values of type '%s'", type(value))
 
-        if not self.tables.has_key(name):
+        if name not in self.tables:
             pass
         else:
             if self.warnings:
-                print "Warning! The previous data with key %s is being overwritten" %name
+                print(("Warning! The previous data with key %s is being overwritten" %name))
             self._delete_table(name)
 
         try:
@@ -182,7 +182,7 @@ class AutoTable:
 
         >>> tbl.append( { 't':0.23 , 'D':np.zeros((10,10)) )
         """
-        for name, value in valdict.items():
+        for name, value in list(valdict.items()):
             self.append(name, value)
 
     def appendList(self, name, value):
@@ -208,7 +208,7 @@ class AutoTable:
             raise TypeError("Don't know how to handle values of type '%s'", type(value))
 
         # Check if we need to create a new table
-        if not self.tables.has_key(name):
+        if name not in self.tables:
             self._create_table_list(name, value)
 
         value = value.reshape(value.shape )
@@ -259,11 +259,11 @@ class AutoTable:
 
             h5 = self.h5
             filters = tables.Filters(complevel=self.compression_level, complib='zlib', shuffle=True)
-            self.tables[name] = h5.createEArray( h5.root, name, h5type, h5dim, filters=filters )
+            self.tables[name] = h5.create_earray( h5.root, name, h5type, h5dim, filters=filters )
         elif type(example)==str:
             h5 = self.h5
             filters = tables.Filters(complevel=self.compression_level, complib='zlib', shuffle=True)
-            self.tables[name] = h5.createVLArray( h5.root, name, h5type, filters=filters )
+            self.tables[name] = h5.create_vlarray( h5.root, name, h5type, filters=filters )
         self.types[name] = type(example)
 
     def _create_table_list(self, name, example):
@@ -298,11 +298,11 @@ class AutoTable:
 
             h5 = self.h5
             filters = tables.Filters(complevel=self.compression_level, complib='zlib', shuffle=True)
-            self.tables[name] = h5.createEArray( h5.root, name, h5type, h5dim, filters=filters )
+            self.tables[name] = h5.create_earray( h5.root, name, h5type, h5dim, filters=filters )
         elif type(example)==list and type(example[0])==str:
             h5 = self.h5
             filters = tables.Filters(complevel=self.compression_level, complib='zlib', shuffle=True)
-            self.tables[name] = h5.createVLArray( h5.root, name, h5type, filters=filters )
+            self.tables[name] = h5.create_vlarray( h5.root, name, h5type, filters=filters )
         self.types[name] = type(example)
 
     def _guess_fname(self):
@@ -321,7 +321,7 @@ class AutoTable:
         Removing the numpy specific operation in appending
         """
         # Check if we need to create a new table
-        if not self.tables.has_key(name):
+        if name not in self.tables:
             self._create_table(name, value)
 
         try:
@@ -337,11 +337,11 @@ class AutoTable:
         Removing the numpy specific operation in appending
         """
         # Check if we need to create a new table
-        if not self.tables.has_key(name):
+        if name not in self.tables:
             self._create_table_list(name, value)
 
         try:
-            map(self.tables[name].append,value)
+            list(map(self.tables[name].append,value))
         except ValueError:
             raise TypeError('Wrong datatype for "%s" field'%name)
 

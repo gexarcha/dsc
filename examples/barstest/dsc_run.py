@@ -36,6 +36,7 @@ if MPI.COMM_WORLD.rank==0:
     print ("Executing :{}".format(cmd))
     os.system(cmd)
 
+
 def rank0only(func, *args, **kargs):
     if MPI.COMM_WORLD.rank == 0:
         func(*args, **kargs)
@@ -43,7 +44,7 @@ def rank0only(func, *args, **kargs):
 
 
 # Number of datapoints to generate
-N = 1000
+N = 10000
 
 # Each datapoint is of D = size*size
 size = 5
@@ -51,6 +52,7 @@ size = 5
 # Diemnsionality of the model
 H = 2 * size     # number of latents
 D = size ** 2    # dimensionality of observed data
+HL= D+size
 
 # Approximation parameters for Expectation Truncation
 Hprime = 7
@@ -60,7 +62,8 @@ states=np.array([-2.,-1.,0.,1.,2.])
 
 # Import and instantiate a model
 from dsc.models.dsc_et import DSC_ET
-model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['sigma','W','pi'])
+data_model = DSC_ET(D, H, Hprime, gamma,states=states, to_learn=['sigma','W','pi'])
+model = DSC_ET(D, HL, Hprime, gamma,states=states, to_learn=['sigma','W','pi'])
 
 # Model parameters used when artificially generating
 # ground-truth data. This will NOT be used for the learning
@@ -78,7 +81,7 @@ params_gt = {
 
 if MPI.COMM_WORLD.rank == 0:
     # create data
-    data = model.generate_data(params_gt, N)
+    data = data_model.generate_data(params_gt, N)
 
     # and save results
     out_fname = output_path + "/data.h5"
@@ -138,7 +141,7 @@ if __name__ == "__main__":
     print_list = ('T', 'Q', 'pi', 'sigma', 'N', 'N_use', 'MAE', 'L')
     h5_list = ('W', 'pi', 'sigma', 'y', 'N', 'N_use', 'prior_mass', 'states', 'Hprime', 'H', 'gamma', 'mu', 'MAE','W_gt','pi_gt','sigma_gt')
     dlog.set_handler(print_list, TextPrinter)
-    dlog.set_handler(print_list, StoreToTxt)
+    dlog.set_handler(print_list, StoreToTxt, output_path +'/result.h5')
     dlog.set_handler(h5_list, StoreToH5, output_path +'/result.h5')
     dlog.append('W_gt',params_gt['W'])
     dlog.append('sigma_gt',params_gt['sigma'])

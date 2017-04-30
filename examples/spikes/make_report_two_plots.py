@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 # plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 plt.rc('text', usetex=True)
+FONTSIZE=24
 import tables as tb
 import os
 # import tqdm
@@ -197,17 +198,20 @@ for e in range(epochs)[::-1]:
 		ax2.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)  # bottom-right diagonal
 
 		# We change the fontsize of minor ticks label
-		# ax.tick_params(axis='both', which='major', labelsize=20)
-		# ax.tick_params(axis='both', which='minor', labelsize=20)
+		ax.tick_params(axis='both', which='major', labelsize=20)
+		ax.tick_params(axis='both', which='minor', labelsize=20)
 		ax2.set_xticks(states)
-		# ax2.tick_params(axis='both', which='major', labelsize=20)
-		# ax2.tick_params(axis='both', which='minor', labelsize=20)
+		ax2.tick_params(axis='both', which='major', labelsize=20)
+		ax2.tick_params(axis='both', which='minor', labelsize=20)
 		ax2.tick_params(axis='x', which='major', length=1)
 		ax2.tick_params(axis='x', which='minor', length=1)
 		# ax2.tick_params(axis='x', which='major', labelsize=20, length=1)
 		# ax2.tick_params(axis='x', which='minor', labelsize=20, length=1)
 		f.savefig(outputdir+'montage_images/pi_broken_{:03}.jpg'.format(e))
 		plt.close(f)
+
+# plt.tick_params(axis='both',labelsize=16)
+# plt.clf()
 
 
 state_list = []
@@ -236,6 +240,19 @@ if series is not None and rseries is not None:
 	    s+=step
 	reconseries2 = np.zeros((lims[-1][1],))
 	std_series=np.std(series[:reconseries2.shape[0]])
+
+
+	fig=plt.figure()
+	ax=fig.add_subplot(111)
+	ax.plot(sigma_all,label='$\sigma_{model}$')
+	ax.plot(np.arange(sigma_all.shape[0]),std_series*np.ones_like(sigma_all),label='$\sigma_{orig}$',linestyle='dashed')
+	ax.tick_params(axis='both',labelsize=20)
+
+	# print(std_series)
+	ax.axis([0,200,10,22])
+	ax.legend()
+	fig.savefig(outputdir+'sigma.jpg')
+
 	assert overlap<=0.5
 	s=0
 	lims2 = [0]
@@ -342,9 +359,9 @@ if series is not None and rseries is not None:
 		handles, labels = ax_orig_recon_1.get_legend_handles_labels()
 		lgd1 = ax_orig_recon_1.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		# ax_orig_recon_1.set_xlabel("ms")
-		ax_orig_recon_1.set_ylabel("mV [400-4000]Hz")
-		ax_orig_recon_1.set_title("A.", marker_font_dict,loc='left')
-		ax_orig_recon_1.set_title(r"Original and Reconstructed Signal", fontdict=title_font_dict,loc='center')
+		ax_orig_recon_1.set_ylabel("mV [400-4000]Hz",fontsize=FONTSIZE)
+		ax_orig_recon_1.set_title("A.", marker_font_dict,loc='left',fontsize=FONTSIZE)
+		ax_orig_recon_1.set_title(r"Original and Reconstructed Signal",fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 		# ax_orig_recon_1.grid('on')
 
 		# plt.savefig(outputdir+'reconstructions/'+'series_{}_{}.jpg'.format(s,s+l))
@@ -438,8 +455,8 @@ if series is not None and rseries is not None:
 		ax_decomp_1.set_yticklabels(tlab)
 		ax_decomp_1.tick_params(axis='both',labelsize=12)
 		# ax_decomp_1.set_xlabel("ms")
-		ax_decomp_1.set_title("B.", marker_font_dict,loc='left')
-		ax_decomp_1.set_title("$t-1$", fontdict=title_font_dict,loc='center')
+		ax_decomp_1.set_title("B.", marker_font_dict, fontsize=FONTSIZE,loc='left')
+		ax_decomp_1.set_title("$t-1$",fontsize=FONTSIZE, fontdict=title_font_dict, loc='center')
 		# ax_decomp_1.set_ylabel("mV [400-4000]Hz")
 
 		ax_decomp_2.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
@@ -447,17 +464,17 @@ if series is not None and rseries is not None:
 		ax_decomp_2.set_yticklabels(tlab)
 		ax_decomp_2.tick_params(axis='both',labelsize=12)
 		# ax_decomp_2.set_xlabel("ms")
-		ax_decomp_2.set_title("C.", marker_font_dict,loc='left')
-		ax_decomp_2.set_title("$t$", fontdict=title_font_dict,loc='center')
+		ax_decomp_2.set_title("C.", marker_font_dict, fontsize=FONTSIZE,loc='left')
+		ax_decomp_2.set_title("$t$",fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 		# ax_decomp_2.set_ylabel("mV [400-4000]Hz")
 
 		ax_decomp_3.axis([lim_x1,lim_x2,np.min(W_all[-1])-3,np.max(np.abs(W_all[-1]))+(gamma-1)*O2+3],fontsize=12)
 		ax_decomp_3.set_yticks(tloc)
 		ax_decomp_3.set_yticklabels(tlab)
 		ax_decomp_3.tick_params(axis='both',labelsize=12)
-		ax_decomp_3.set_xlabel("ms")
-		ax_decomp_3.set_title("D.", marker_font_dict,loc='left')
-		ax_decomp_3.set_title("$t+1$", fontdict=title_font_dict,loc='center')
+		ax_decomp_3.set_xlabel("ms",fontsize=FONTSIZE)
+		ax_decomp_3.set_title("D.", marker_font_dict, fontsize=FONTSIZE, loc='left')
+		ax_decomp_3.set_title("$t+1$",fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 		# ax_decomp_3.set_ylabel("mV [400-4000]Hz")
 
 
@@ -491,9 +508,9 @@ if series is not None and rseries is not None:
 		handles, labels = ax_orig_recon_2.get_legend_handles_labels()
 		lgd1 = ax_orig_recon_2.legend(handles,labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		# ax_orig_recon_2.set_xlabel("ms")
-		ax_orig_recon_2.set_ylabel(r"mV [400-4000]Hz")
-		ax_orig_recon_2.set_title(r"A.", marker_font_dict,loc='left')
-		ax_orig_recon_2.set_title(r"Original and Reconstructed signal", fontdict=title_font_dict,loc='center')
+		ax_orig_recon_2.set_ylabel(r"mV [400-4000]Hz",fontsize=FONTSIZE)
+		ax_orig_recon_2.set_title(r"A.", marker_font_dict,loc='left',fontsize=FONTSIZE)
+		ax_orig_recon_2.set_title(r"Original and Reconstructed signal", fontsize=FONTSIZE,fontdict=title_font_dict,loc='center')
 		# ax_orig_recon_1.grid('on')
 
 		ax_diff = plt.subplot2grid((4,1),(1,0))
@@ -517,8 +534,8 @@ if series is not None and rseries is not None:
 		ax_diff.plot(xdata,-sigma_all[-1]*np.ones_like(xdata),linestyle='dashdot',color='lime')
 		ax_diff.axis([lim_x1,lim_x2,minb,maxb],fontsize=12)
 		ax_diff.tick_params(axis='both',labelsize=12)
-		ax_diff.set_title("B.", marker_font_dict,loc='left')
-		ax_diff.set_title("Difference EC-REC", fontdict=title_font_dict,loc='center')
+		ax_diff.set_title("B.", marker_font_dict, fontsize=FONTSIZE,loc='left')
+		ax_diff.set_title("Difference EC-REC", fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 		# ax_diff.set_xlabel("ms")
 		# ax_diff.set_ylabel("mV [400-4000]Hz")
 		# ax.yticks(fontsize=16)
@@ -566,17 +583,17 @@ if series is not None and rseries is not None:
 		lgd2 = ax_IC.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.,1.),fontsize=9)
 		ax_IC.tick_params(axis='both',labelsize=12)
 		# ax_IC.set_xlabel("ms")
-		ax_IC.set_ylabel("mV")
-		ax_IC.set_title("C.", marker_font_dict,loc='left')
-		ax_IC.set_title("Time-aligned intra-cellular recording (IC)", fontdict=title_font_dict,loc='center')
+		ax_IC.set_ylabel("mV",fontsize=FONTSIZE)
+		ax_IC.set_title("C.", marker_font_dict, fontsize=FONTSIZE,loc='left')
+		ax_IC.set_title("Time-aligned intra-cellular recording (IC)", fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 		# ax_IC.grid('on')
 		ax_mass=plt.subplot2grid((4,1),(3,0))
 		ax_mass.bar(these_lims*time_scale,tmass,trssize*time_scale)
 		ax_mass.axis([lim_x1,lim_x2,0,gamma*np.max(states)*np.max(np.mean(np.abs(W_all[-1]),0))],fontsize=12)
 		ax_mass.tick_params(axis='both',labelsize=12)
-		ax_mass.set_xlabel("ms")
-		ax_mass.set_title("D.", marker_font_dict,loc='left')
-		ax_mass.set_title("Model Spike Mass", fontdict=title_font_dict,loc='center')
+		ax_mass.set_xlabel("ms",fontsize=FONTSIZE)
+		ax_mass.set_title("D.", marker_font_dict, fontsize=FONTSIZE, loc='left')
+		ax_mass.set_title("Model Spike Mass", fontsize=FONTSIZE, fontdict=title_font_dict,loc='center')
 
 
 
@@ -597,12 +614,5 @@ if series is not None and rseries is not None:
 	# fig_decomp = plt.figure()
 	# ax = fig_decomp.add_subplot(111)
 	# ax.
-plt.clf()
-plt.plot(sigma_all,label='$\sigma_{model}$')
-plt.plot(np.arange(sigma_all.shape[0]),std_series*np.ones_like(sigma_all),label='$\sigma_{orig}$',linestyle='dashed')
-print(std_series)
-plt.axis([0,200,10,22])
-plt.legend()
-plt.savefig(outputdir+'sigma.jpg')
-plt.clf()
-print("state_list holds the states of interest")
+
+# print("state_list holds the states of interest")

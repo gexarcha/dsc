@@ -9,7 +9,7 @@ import os
 import tqdm
 
 
-outputdir = 'output/'+'dsc_run.py.2016-06-28+18:58/'
+outputdir = 'output/'+'dsc_run.py.2017-04-30+13:25/'
 ofile = outputdir+'result.h5'
 dfile = outputdir+'data.h5'
 
@@ -74,7 +74,7 @@ for e in tqdm.tqdm(range(epochs)[::-1],'epochs'):
 	if not os.path.exists('{}montage_images/W_e_{:03}.jpg'.format(outputdir, e)):
 		fig = plt.figure(figsize=(30,5))
 		im=None
-		for h in tqdm.tqdm(range(H),'Hidden Basis',nested=True):
+		for h in tqdm.tqdm(range(H),'Hidden Basis'):
 			# if os.path.exists(outputdir+'_images/'+'W_e_{:03}_h_{:03}.jpg'.format(e,h)):
 				# continue
 			this_W = W_all[e,:,h]
@@ -87,7 +87,7 @@ for e in tqdm.tqdm(range(epochs)[::-1],'epochs'):
 				maxw, minw = maxwg, minwg
 			elif cscale == 'local':
 				maxw, minw = maxwl, minwl
-			ax = fig.add_subplot(1,10,h+1)
+			ax = fig.add_subplot(1,H,h+1)
 			im=ax.imshow(this_W,interpolation='nearest',vmin=minwle,vmax=maxwle)
 			ax.axis('off')
 		fig.subplots_adjust(right=0.8)
@@ -102,7 +102,7 @@ for e in tqdm.tqdm(range(epochs)[::-1],'epochs'):
 #ground truth
 fig = plt.figure(figsize=(30,5))
 im=None
-for h in tqdm.tqdm(range(H),'Hidden Basis',nested=True):
+for h in tqdm.tqdm(range(H),'Hidden Basis'):
 	this_W = W_gt[:,h].reshape((psz,psz))+1e-5
 	minwle = -np.max(np.abs(this_W)) 
 	maxwle = -minwle 
@@ -120,7 +120,7 @@ plt.close(fig)
 #data
 fig = plt.figure(figsize=(30,5))
 im=None
-for h in tqdm.tqdm(range(H),'Hidden Basis',nested=True):
+for h in tqdm.tqdm(range(H),'Hidden Basis'):
 	this_y = y[h].reshape((psz,psz))+1e-5
 	minwle = -np.max(np.abs(this_y)) 
 	maxwle = -minwle 

@@ -2,7 +2,7 @@
 #  Lincense: Academic Free License (AFL) v3.0
 #
 
-from __future__ import division
+
 
 import numpy as np
 from mpi4py import MPI
@@ -82,7 +82,7 @@ class DModel():
 
         # Generate state-space list
         ss = np.empty((0, self.H), dtype=np.int8)
-        for i in xrange(self.K):
+        for i in range(self.K):
             if (i == self.K_0):
                 continue
             temp = np.eye(self.H, dtype=np.int8) * states[i]
@@ -118,7 +118,7 @@ class DModel():
         # Create output arrays, y is data, s is ground-truth
         y = np.zeros((my_N, D))
         s = np.zeros((my_N, H), dtype=np.int8)
-        for n in xrange(my_N):
+        for n in range(my_N):
             if gs is None:
                 s[n] = np.random.choice(states, size=H, replace=True, p=pi)
             else:
@@ -162,7 +162,7 @@ class DModel():
 
         # Construct partial my_pdata...
         my_pdata = {}
-        for key, val in my_data.items():
+        for key, val in list(my_data.items()):
             my_pdata[key] = val[sel]
 
         return my_pdata
@@ -282,8 +282,8 @@ class DModel():
         my_denomc = my_pjc.sum(axis=1)             # shape: (my_N)
 
         idx = np.argsort(my_logpjc, axis=-1)[:, ::-1]
-        for n in xrange(my_N):                                   # XXX Vectorize XXX
-            for m in xrange(no_maps):
+        for n in range(my_N):                                   # XXX Vectorize XXX
+            for m in range(no_maps):
                 this_idx = idx[n, m]
                 res['p'][n, m] = my_pjc[n, this_idx] / my_denomc[n]
                 if this_idx == 0:
