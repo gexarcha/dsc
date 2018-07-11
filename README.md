@@ -2,7 +2,7 @@
 # Introduction 
 
 This package contains all the source code to reproduce the numerical
-experiments described in the paper Discrete Sparse Coding. 
+experiments described in the paper [Discrete Sparse Coding](https://gexarcha.github.io/files/papers/NECO-09-16-2696R2-PDF.pdf). 
 
 ## Software dependencies 
  
