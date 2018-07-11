@@ -14,11 +14,11 @@ experiments described in the paper [Discrete Sparse Coding](https://gexarcha.git
 
 ## Overview 
 
-pulp/       - Python library/framework for MPI parallelized 
+* pulp/       - Python library/framework for MPI parallelized 
               EM-based algorithms. The models' implementations
               can be found in pulp/em/camodels/.
 
-examples/   - Small examples for initializing and running the models
+* examples/   - Small examples for initializing and running the models
 
 
 
