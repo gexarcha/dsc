@@ -1,10 +1,10 @@
 
-=== Introduction ===
+# Introduction
 
 This package contains all the source code to reproduce the numerical
 experiments described in the paper Discrete Sparse Coding. 
 
-== Software dependencies ==
+## Software dependencies 
  
  * Python (>= 2.6)
  * NumPy (reasonably recent)
@@ -12,7 +12,7 @@ experiments described in the paper Discrete Sparse Coding.
  * pytables (reasonably recent)
  * mpi4py (>= 1.3)
 
-== Overview ==
+## Overview 
 
 pulp/       - Python library/framework for MPI parallelized 
               EM-based algorithms. The models' implementations
@@ -22,7 +22,7 @@ examples/   - Small examples for initializing and running the models
 
 
 
-== Running ==
+## Running
 
 To run the barstest experiment:
 
@@ -47,7 +47,7 @@ cluster largely depends on the configuration. Example batch files
 for our cluster (slurm based) configuration (GOLD cluster - Uni Oldenburg) are
 given in examples/<experiment name>/batchscript.sh
 
-== Results/Output ==
+## Results/Output
 
 The results produced by the code are stored in a 'results.h5' file 
 under "./output/.../". The file stores the model parameters (e.g., W, pi etc.) 
@@ -55,7 +55,7 @@ for each EM iteration performed. To read the results file, you can use
 openFile function of the standard tables package in python. Moreover, the
 results files can also be easily read by other packages such as Matlab etc.
 
-== Running on a parallel architecture ==
+## Running on a parallel architecture 
 
 The code uses MPI based parallelization. If you have parallel resources
 (i.e., a multi-core system or a compute cluster), the provided code can make a 
