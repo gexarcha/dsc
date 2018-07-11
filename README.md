@@ -1,5 +1,5 @@
 
-# Introduction #
+# Introduction 
 
 This package contains all the source code to reproduce the numerical
 experiments described in the paper Discrete Sparse Coding. 
@@ -22,7 +22,7 @@ examples/   - Small examples for initializing and running the models
 
 
 
-### Running
+## Running
 
 To run the barstest experiment:
 
