@@ -69,11 +69,11 @@ To run the same script as above, e.g.,
 
 a) On a multi-core machine with 32 cores:
 ```bash
- $ mpirun -np 32 python bars-run-all.py param-bars-<...>.py
+ $ mpirun -np 32 python dsc_run.py
 ```
 b) On a cluster:
 ```bash
- $ mpirun --hostfile machines python bars-run-all.py param-bars-<...>.py
+ $ mpirun --hostfile machines python dsc_run.py
 ```
  where 'machines' contains a list of suitable machines.
 
